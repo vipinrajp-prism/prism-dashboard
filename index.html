@@ -3126,13 +3126,13 @@ async function placeOrder(symbol, txnType, qty, price) {
   };
   if (price) {
     params.order_type = "LIMIT";
-    params.price = Math.round(price * 100) / 100;
+    params.price = Math.round(price / 0.1) * 0.1;
   } else {
     params.order_type = "LIMIT";
-    // Aggressive limit to simulate market (fills at best available, limit is safety net)
     var buffer = 100;
     var basePrice = currentNiftyPrice || 23000;
-    params.price = txnType === "BUY" ? Math.round((basePrice + buffer) * 100) / 100 : Math.round((basePrice - buffer) * 100) / 100;
+    var rawPrice = txnType === "BUY" ? basePrice + buffer : basePrice - buffer;
+    params.price = Math.round(rawPrice / 0.1) * 0.1;
   }
   return await kiteAPI("/orders/regular", "POST", params);
 }
