@@ -3115,16 +3115,26 @@ async function kiteAPI(endpoint, method, body) {
   return data.data;
 }
 
-async function placeOrder(symbol, txnType, qty) {
-  return await kiteAPI("/orders/regular", "POST", {
+async function placeOrder(symbol, txnType, qty, price) {
+  var params = {
     tradingsymbol: symbol,
     exchange: "NFO",
     transaction_type: txnType,
-    order_type: "MARKET",
     quantity: qty,
     product: "MIS",
     validity: "DAY"
-  });
+  };
+  if (price) {
+    params.order_type = "LIMIT";
+    params.price = Math.round(price * 100) / 100;
+  } else {
+    params.order_type = "LIMIT";
+    // Aggressive limit to simulate market (fills at best available, limit is safety net)
+    var buffer = 100;
+    var basePrice = currentNiftyPrice || 23000;
+    params.price = txnType === "BUY" ? Math.round((basePrice + buffer) * 100) / 100 : Math.round((basePrice - buffer) * 100) / 100;
+  }
+  return await kiteAPI("/orders/regular", "POST", params);
 }
 
 function getNextThursdayExpiry() {
