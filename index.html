@@ -3306,16 +3306,15 @@ async function executeSignal(signal) {
     }
 
     var order = await placeOrder(symbol, txnType, quantity);
+    if (!order || !order.order_id) throw new Error("Order failed: " + JSON.stringify(order));
 
-    var position = await POST("positions", {
+    var posData = {
       session_id: signal.session_id,
       signal_id: signal.id,
       status: "open",
       direction: signal.direction,
       instrument_type: instrumentType,
-      option_type: optionType,
       trading_symbol: symbol,
-      strike_price: strike,
       entry_order_id: order.order_id,
       entry_price_nifty: signal.entry_level,
       entry_quantity: quantity,
@@ -3323,10 +3322,17 @@ async function executeSignal(signal) {
       target_level: signal.target_level,
       sl_level: signal.sl_level,
       entry_time: new Date().toISOString()
-    });
+    };
+    if (optionType) posData.option_type = optionType;
+    if (strike) posData.strike_price = strike;
 
-    await PATCH("signals", { status: "executed", executed_at: new Date().toISOString(), position_id: position[0].id }, "id=eq." + signal.id);
-    await PATCH("session_state", { trade_taken: true, position_id: position[0].id, entry_price: signal.entry_level }, "session_id=eq." + signal.session_id);
+    var position = await POST("positions", posData);
+    if (!position || !Array.isArray(position) || !position[0]) {
+      throw new Error("Position save failed: " + JSON.stringify(position));
+    }
+
+    await PATCH("signals", { status: "executed" }, "id=eq." + signal.id);
+    await PATCH("session_state", { trade_taken: true, active_pattern: signal.pattern, entry_price: signal.entry_level }, "session_id=eq." + signal.session_id);
 
     alert("✓ Order placed: " + symbol + " (" + txnType + ")\nQty: " + quantity + " (" + lots + " lot)\nOrder ID: " + order.order_id);
     hideSignalCard();
