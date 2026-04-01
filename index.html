@@ -2493,7 +2493,7 @@ function renderSP(st) {
     ["SD1","SD2","SD3","SD4","SD5"].forEach(function(p) {
       var s = st.sd_pattern===p ? "FIRED" : st.sd_pattern_evaluated ? "no match" : cn >= 20 ? "no match" : "pending (C20)";
       var v = st.sd_pattern===p ? "bs" : "bd";
-      if (st.seller_pattern_fired && st.seller_pattern_fired!=="SA1_NO_TRADE") { s="blocked"; v="bx"; }
+      if (st.seller_pattern_fired && st.seller_pattern_fired!=="SA1_NO_TRADE" && st.sd_pattern!==p) { s="blocked"; v="bx"; }
       h += '<div class="pr"><span class="pr-n" style="color:#ec4899;font-size:11px">'+p+'</span>'+B(s,v)+'</div>';
     });
     h += '</div>';
@@ -3869,7 +3869,7 @@ function v13UpdateMonitoringLog(st, logs) {
       var s = st.sd_pattern===p ? "FIRED" : st.sd_pattern_evaluated ? "no match" : cn >= 20 ? "no match" : "pending (C20)";
       var v = st.sd_pattern===p ? "bs" : "bd";
       var order = st.sd_pattern===p ? 0 : 2;
-      if (st.seller_pattern_fired && st.seller_pattern_fired!=="SA1_NO_TRADE") { s="BLOCKED"; v="bx"; order=2; }
+      if (st.seller_pattern_fired && st.seller_pattern_fired!=="SA1_NO_TRADE" && st.sd_pattern!==p) { s="BLOCKED"; v="bx"; order=2; }
       sdRows.push({p:p, s:s, v:v, order:order});
     });
     sdRows.sort(function(a,b){ return a.order - b.order; });
@@ -4166,7 +4166,7 @@ function logUpdatePatternStatus(st) {
       var s = st.sd_pattern===p ? "FIRED" : st.sd_pattern_evaluated ? "no match" : cn >= 20 ? "no match" : "pending (C20)";
       var v = st.sd_pattern===p ? "bs" : "bd";
       var order = st.sd_pattern===p ? 0 : 2;
-      if (st.seller_pattern_fired && st.seller_pattern_fired!=="SA1_NO_TRADE") { s="BLOCKED"; v="bx"; order=2; }
+      if (st.seller_pattern_fired && st.seller_pattern_fired!=="SA1_NO_TRADE" && st.sd_pattern!==p) { s="BLOCKED"; v="bx"; order=2; }
       sdRows.push({p:p, s:s, v:v, order:order});
     });
     sdRows.sort(function(a,b){ return a.order - b.order; });
