@@ -3137,6 +3137,17 @@ async function placeOrder(symbol, txnType, qty, price) {
   return await kiteAPI("/orders/regular", "POST", params);
 }
 
+async function fetchKiteOrderDetails(orderId) {
+  try {
+    var orders = await kiteAPI("/orders/" + orderId);
+    if (orders && orders.length > 0) {
+      var latest = orders[orders.length - 1];
+      return { status: latest.status, average_price: latest.average_price, filled_quantity: latest.filled_quantity };
+    }
+    return null;
+  } catch(e) { console.warn("Order details fetch failed:", e); return null; }
+}
+
 function getNextThursdayExpiry() {
   var now = new Date();
   var day = now.getDay();
@@ -3229,14 +3240,15 @@ function showPositionCard(position) {
   document.getElementById("positionCard").classList.remove("hidden");
   document.getElementById("posSymbol").textContent = position.trading_symbol || "—";
   document.getElementById("posPattern").textContent = position.pattern || "OPEN";
-  document.getElementById("posEntry").textContent = F(position.entry_price_nifty);
+  var effectiveEntry = position.entry_price_actual || position.entry_price_nifty;
+  document.getElementById("posEntry").textContent = F(effectiveEntry);
   document.getElementById("posTarget").textContent = F(position.target_level);
   document.getElementById("posSL").textContent = F(position.sl_level);
   document.getElementById("posCurrent").textContent = F(currentNiftyPrice);
 
-  if (currentNiftyPrice && position.entry_price_nifty) {
+  if (currentNiftyPrice && effectiveEntry) {
     var isLong = position.direction === "LONG";
-    var pnlPoints = isLong ? currentNiftyPrice - position.entry_price_nifty : position.entry_price_nifty - currentNiftyPrice;
+    var pnlPoints = isLong ? currentNiftyPrice - effectiveEntry : effectiveEntry - currentNiftyPrice;
     var qty = position.entry_quantity || 25;
     var isFutures = position.instrument_type === "FUTURES";
     
@@ -3308,6 +3320,16 @@ async function executeSignal(signal) {
     var order = await placeOrder(symbol, txnType, quantity);
     if (!order || !order.order_id) throw new Error("Order failed: " + JSON.stringify(order));
 
+    // Fetch fill price from Kite (wait for fill)
+    var fillPrice = null;
+    try {
+      await new Promise(function(r){ setTimeout(r, 2000); });
+      var orderDetails = await fetchKiteOrderDetails(order.order_id);
+      if (orderDetails && orderDetails.average_price) {
+        fillPrice = orderDetails.average_price;
+      }
+    } catch(e) { console.warn("Fill price fetch failed:", e); }
+
     var posData = {
       session_id: signal.session_id,
       signal_id: signal.id,
@@ -3317,6 +3339,7 @@ async function executeSignal(signal) {
       trading_symbol: symbol,
       entry_order_id: order.order_id,
       entry_price_nifty: signal.entry_level,
+      entry_price_actual: fillPrice || signal.entry_level,
       entry_quantity: quantity,
       entry_lots: lots,
       target_level: signal.target_level,
@@ -3369,9 +3392,10 @@ async function manualExit(position) {
     }
     
     var order = await placeOrder(position.trading_symbol, exitTxnType, position.entry_quantity);
+    var effectiveEntry = position.entry_price_actual || position.entry_price_nifty;
     var pnlPoints = position.direction === "LONG" 
-      ? currentNiftyPrice - position.entry_price_nifty 
-      : position.entry_price_nifty - currentNiftyPrice;
+      ? currentNiftyPrice - effectiveEntry 
+      : effectiveEntry - currentNiftyPrice;
 
     await PATCH("positions", {
       status: "closed",
@@ -3815,7 +3839,7 @@ function v13UpdateMonitoringLog(st, logs) {
     sigTarget = F(currentSignal.target_level);
     sigSL = F(currentSignal.sl_level);
   } else if (currentPosition) {
-    sigEntry = F(currentPosition.entry_price_nifty);
+    sigEntry = F(currentPosition.entry_price_actual || currentPosition.entry_price_nifty);
     sigTarget = F(currentPosition.target_level);
     sigSL = F(currentPosition.sl_level);
   } else if (st.entry_price) {
@@ -4442,7 +4466,7 @@ function v13ShowPositionCard(position) {
   document.getElementById('v13PosDirection').textContent = position.direction;
   document.getElementById('v13PosDirection').className = 'signal-direction ' + position.direction.toLowerCase();
   
-  var entry = position.entry_price_nifty;
+  var entry = position.entry_price_actual || position.entry_price_nifty;
   var current = currentNiftyPrice || entry;
   var pnlPts = position.direction === 'LONG' ? current - entry : entry - current;
   var qty = position.entry_quantity || 65;
