@@ -2404,8 +2404,8 @@ async function fetchData() {
       Q("session_state", "select=*&session_id=eq." + sid + "&limit=1"),
       Q("pivot_levels", "select=*&session_id=eq." + sid + "&limit=1"),
       Q("signals", "select=*&session_id=eq." + sid + "&order=created_at.desc"),
-      Q("candles", "select=*&session_id=eq." + sid + "&order=candle_number.desc&limit=200"),
-      Q("engine_logs", "select=*&session_id=eq." + sid + "&order=created_at.desc&limit=50")
+      Q("candles", "select=*&session_id=eq." + sid + "&order=candle_number.asc&limit=1500"),
+      Q("engine_logs", "select=*&session_id=eq." + sid + "&level=neq.debug&order=created_at.desc&limit=50")
     ]);
 
     var st = results[0][0] || null;
@@ -2424,7 +2424,7 @@ async function fetchData() {
 
     // Update current Nifty price from latest candle
     if (cnds.length > 0) {
-      currentNiftyPrice = cnds[0].close;
+      currentNiftyPrice = cnds[cnds.length - 1].close;
     }
 
     // Check for pending signals and open positions (only for today)
@@ -3729,8 +3729,8 @@ function v13RemoveTradingLines() {
 
 function v13UpdateNiftyPrice(candles) {
   if (!candles || !candles.length) return;
-  var latest = candles[0];
-  var refPrice = (v13CurrentPivots && v13CurrentPivots.pdc) ? v13CurrentPivots.pdc : candles[candles.length - 1].open;
+  var latest = candles[candles.length - 1];
+  var refPrice = (v13CurrentPivots && v13CurrentPivots.pdc) ? v13CurrentPivots.pdc : candles[0].open;
   var change = latest.close - refPrice;
   var changePct = ((change / refPrice) * 100).toFixed(2);
   
@@ -3770,7 +3770,7 @@ function renderCandlesRows() {
   if (!tbody) return;
   
   var html = '';
-  var toShow = allCandles.slice(0, candlesDisplayed);
+  var toShow = allCandles.slice().reverse().slice(0, candlesDisplayed);
   toShow.forEach(function(c) {
     var time = c.candle_time || '—';
     var isUp = +c.close >= +c.open;
@@ -3889,10 +3889,20 @@ function v13UpdateMonitoringLog(st, logs) {
   }
 
   if (st.c1_type === 'seller') {
-    h += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;padding-top:8px"><div class="section-title">Seller patterns</div>';
-    h += buildPatternRows(["SB1","SB2","SA1","SC1"], { SB1: 4, SB2: 60, SA1: 8, SC1: 20 }, st.seller_pattern_fired);
+    h += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;padding-top:8px"><div class="section-title">Pattern Status</div>';
+    var allRows = [];
+    // SB1, SB2, SA1, SC1
+    var deadlines = { SB1: 4, SB2: 60, SA1: 8, SC1: 20 };
+    ["SB1","SB2","SA1","SC1"].forEach(function(p) {
+      var conf = st[p.toLowerCase()+"_confirmed"];
+      var fired = st.seller_pattern_fired;
+      var s = "monitoring", v = "bd", order = 1;
+      if (conf) { s="FIRED"; v="bs"; order = 0; }
+      else if (fired && fired !== "SA1_NO_TRADE") { s="BLOCKED"; v="bx"; order = 2; }
+      else if (cn > (deadlines[p] || 60)) { s="EXPIRED"; v="bw"; order = 2; }
+      allRows.push({p:p, s:s, v:v, order:order});
+    });
     // SD family
-    var sdRows = [];
     ["SD1","SD2","SD3","SD4","SD5"].forEach(function(p) {
       var s, v, order;
       if (st.sd_pattern===p) {
@@ -3901,16 +3911,15 @@ function v13UpdateMonitoringLog(st, logs) {
         else { s="NO ENTRY"; v="bw"; order=0; }
       } else { s = st.sd_pattern_evaluated ? "no match" : cn >= 20 ? "no match" : "pending (C20)"; v="bd"; order=2; }
       if (st.seller_pattern_fired && st.seller_pattern_fired!=="SA1_NO_TRADE" && st.sd_pattern!==p) { s="BLOCKED"; v="bx"; order=2; }
-      sdRows.push({p:p, s:s, v:v, order:order});
+      allRows.push({p:p, s:s, v:v, order:order});
     });
-    sdRows.sort(function(a,b){ return a.order - b.order; });
-    h += '<div style="border-top:1px solid rgba(255,255,255,0.04);margin-top:4px;padding-top:4px">';
-    sdRows.forEach(function(r){
-      h += '<div class="pat-row"><span class="pat-name" style="color:#ec4899;font-size:11px">'+r.p+'</span>'+B(r.s,r.v)+'</div>';
+    allRows.sort(function(a,b){ return a.order - b.order; });
+    allRows.forEach(function(r){
+      h += '<div class="pat-row"><div style="display:flex;align-items:baseline;gap:6px"><span class="pat-name" style="color:'+PC(r.p)+'">'+r.p+'</span><span class="pat-desc">'+(PM[r.p]||{}).d+'</span></div>'+B(r.s,r.v)+'</div>';
     });
-    h += '</div></div>';
+    h += '</div>';
   } else if (st.c1_type === 'buyer') {
-    h += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;padding-top:8px"><div class="section-title">Buyer patterns</div>';
+    h += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;padding-top:8px"><div class="section-title">Pattern Status</div>';
     var buyerDeadlines = { BA1: 20, BB1: 40, BC1: 20, BC2: 60 };
     if (st.ba1_waiting_reentry) buyerDeadlines.BA1 = 60;
     h += buildPatternRows(["BA1","BB1","BC1","BC2"], buyerDeadlines, st.buyer_pattern_fired);
@@ -4052,13 +4061,13 @@ async function loadLogData() {
       Q("signals", "select=*&session_id=eq." + sid + "&order=created_at.desc"),
       Q("candles", "select=*&session_id=eq." + sid + "&candle_number=lte.750&order=candle_number.asc&limit=1000"),
       Q("candles", "select=*&session_id=eq." + sid + "&candle_number=gt.750&order=candle_number.asc&limit=1000"),
-      Q("engine_logs", "select=*&session_id=eq." + sid + "&order=created_at.desc&limit=50")
+      Q("engine_logs", "select=*&session_id=eq." + sid + "&level=neq.debug&order=created_at.desc&limit=50")
     ]);
     
     var st = results[0][0] || null;
     var pv = results[1][0] || null;
     var sigs = results[2] || [];
-    var cnds = (results[3] || []).concat(results[4] || []).sort(function(a,b){ return b.candle_number - a.candle_number; });
+    var cnds = (results[3] || []).concat(results[4] || []).sort(function(a,b){ return a.candle_number - b.candle_number; });
     var logs = results[5] || [];
     
     // Update NIFTY price (last candle close, change from PDC)
@@ -4190,9 +4199,18 @@ function logUpdatePatternStatus(st) {
   }
 
   if (st.c1_type === 'seller') {
-    h += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;padding-top:8px"><div class="section-title">Seller patterns</div>';
-    h += buildPatternRows(["SB1","SB2","SA1","SC1"], { SB1: 4, SB2: 60, SA1: 8, SC1: 20 }, st.seller_pattern_fired);
-    var sdRows = [];
+    h += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;padding-top:8px"><div class="section-title">Pattern Status</div>';
+    var allRows = [];
+    var deadlines = { SB1: 4, SB2: 60, SA1: 8, SC1: 20 };
+    ["SB1","SB2","SA1","SC1"].forEach(function(p) {
+      var conf = st[p.toLowerCase()+"_confirmed"];
+      var fired = st.seller_pattern_fired;
+      var s = "monitoring", v = "bd", order = 1;
+      if (conf) { s="FIRED"; v="bs"; order = 0; }
+      else if (fired && fired !== "SA1_NO_TRADE") { s="BLOCKED"; v="bx"; order = 2; }
+      else if (cn > (deadlines[p] || 60)) { s="EXPIRED"; v="bw"; order = 2; }
+      allRows.push({p:p, s:s, v:v, order:order});
+    });
     ["SD1","SD2","SD3","SD4","SD5"].forEach(function(p) {
       var s, v, order;
       if (st.sd_pattern===p) {
@@ -4201,16 +4219,15 @@ function logUpdatePatternStatus(st) {
         else { s="NO ENTRY"; v="bw"; order=0; }
       } else { s = st.sd_pattern_evaluated ? "no match" : cn >= 20 ? "no match" : "pending (C20)"; v="bd"; order=2; }
       if (st.seller_pattern_fired && st.seller_pattern_fired!=="SA1_NO_TRADE" && st.sd_pattern!==p) { s="BLOCKED"; v="bx"; order=2; }
-      sdRows.push({p:p, s:s, v:v, order:order});
+      allRows.push({p:p, s:s, v:v, order:order});
     });
-    sdRows.sort(function(a,b){ return a.order - b.order; });
-    h += '<div style="border-top:1px solid rgba(255,255,255,0.04);margin-top:4px;padding-top:4px">';
-    sdRows.forEach(function(r){
-      h += '<div class="pat-row"><span class="pat-name" style="color:#ec4899;font-size:11px">'+r.p+'</span>'+B(r.s,r.v)+'</div>';
+    allRows.sort(function(a,b){ return a.order - b.order; });
+    allRows.forEach(function(r){
+      h += '<div class="pat-row"><div style="display:flex;align-items:baseline;gap:6px"><span class="pat-name" style="color:'+PC(r.p)+'">'+r.p+'</span><span class="pat-desc">'+(PM[r.p]||{}).d+'</span></div>'+B(r.s,r.v)+'</div>';
     });
-    h += '</div></div>';
+    h += '</div>';
   } else if (st.c1_type === 'buyer') {
-    h += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;padding-top:8px"><div class="section-title">Buyer patterns</div>';
+    h += '<div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;padding-top:8px"><div class="section-title">Pattern Status</div>';
     var buyerDeadlines = { BA1: 20, BB1: 40, BC1: 20, BC2: 60 };
     if (st.ba1_waiting_reentry) buyerDeadlines.BA1 = 60;
     h += buildPatternRows(["BA1","BB1","BC1","BC2"], buyerDeadlines, st.buyer_pattern_fired);
