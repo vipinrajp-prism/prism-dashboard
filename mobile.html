@@ -4,957 +4,176 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>PRISM-15 Mobile</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: #080c14;
-  color: #e2e8f0;
-  min-height: 100vh;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Header */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 16px;
-  background: #0a0e17;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.logo {
-  font-size: 18px;
-  font-weight: 800;
-  background: linear-gradient(135deg, #06b6d4, #3b82f6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -0.5px;
-}
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.live-badge {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #22c55e;
-  background: rgba(34,197,94,0.1);
-  padding: 5px 10px;
-  border-radius: 20px;
-}
-.live-badge .dot {
-  width: 6px;
-  height: 6px;
-  background: #22c55e;
-  border-radius: 50%;
-  animation: pulse 1.5s infinite;
-}
-.live-badge.off { color: #64748b; background: rgba(100,116,139,0.1); }
-.live-badge.off .dot { background: #64748b; animation: none; }
-@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
-.refresh-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #94a3b8;
-  font-size: 16px;
-  cursor: pointer;
-}
-.refresh-btn:active { background: rgba(255,255,255,0.1); }
-
-/* Connection Screen */
-.connect-screen {
-  padding: 40px 20px;
-  text-align: center;
-}
-.connect-title {
-  font-size: 24px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-.connect-desc {
-  font-size: 13px;
-  color: #64748b;
-  margin-bottom: 24px;
-}
-.connect-input {
-  width: 100%;
-  padding: 14px 16px;
-  background: #0f1520;
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 10px;
-  color: #e2e8f0;
-  font-size: 14px;
-  font-family: 'DM Sans', sans-serif;
-  margin-bottom: 16px;
-}
-.connect-input:focus { outline: none; border-color: #06b6d4; }
-.connect-btn {
-  width: 100%;
-  padding: 14px;
-  background: linear-gradient(135deg, #06b6d4, #3b82f6);
-  border: none;
-  border-radius: 10px;
-  color: white;
-  font-size: 14px;
-  font-weight: 700;
-  font-family: 'DM Sans', sans-serif;
-  cursor: pointer;
-}
-.connect-btn:active { opacity: 0.9; }
-
-/* Main Content */
-.main { display: none; }
-.main.show { display: block; }
-
-/* Kite Bar */
-.kite-bar {
-  padding: 12px 16px;
-  background: #0a0e17;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.kite-status {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-}
-.kite-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #ef4444;
-}
-.kite-dot.on { background: #22c55e; }
-.kite-btn {
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  font-family: 'DM Sans', sans-serif;
-  cursor: pointer;
-  border: none;
-}
-.kite-btn.login {
-  background: linear-gradient(135deg, #f97316, #ea580c);
-  color: white;
-}
-.kite-btn.logout {
-  background: rgba(239,68,68,0.1);
-  border: 1px solid rgba(239,68,68,0.3);
-  color: #f87171;
-}
-
-/* NIFTY Price */
-.nifty-section {
-  padding: 20px 16px;
-  text-align: center;
-  background: linear-gradient(180deg, #0f1520 0%, #080c14 100%);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.nifty-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 4px;
-}
-.nifty-price {
-  font-size: 36px;
-  font-weight: 800;
-  letter-spacing: -1px;
-}
-.nifty-price.up { color: #22c55e; }
-.nifty-price.down { color: #ef4444; }
-.nifty-change {
-  font-size: 14px;
-  font-weight: 600;
-  margin-top: 4px;
-}
-.nifty-change.up { color: #22c55e; }
-.nifty-change.down { color: #ef4444; }
-
-/* Monitoring */
-.section {
-  padding: 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-.section-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.monitor-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.monitor-item {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.04);
-  border-radius: 8px;
-  padding: 10px 12px;
-}
-.monitor-label {
-  font-size: 10px;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  margin-bottom: 4px;
-}
-.monitor-value {
-  font-size: 14px;
-  font-weight: 700;
-  color: #e2e8f0;
-}
-.monitor-value.buyer { color: #22c55e; }
-.monitor-value.seller { color: #ef4444; }
-.monitor-value.yes { color: #22c55e; }
-.monitor-value.no { color: #64748b; }
-.monitor-value.pattern { color: #f59e0b; }
-
-/* Signal Card */
-.signal-card {
-  margin: 16px;
-  background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(59,130,246,0.1));
-  border: 1px solid rgba(6,182,212,0.3);
-  border-radius: 12px;
-  padding: 16px;
-  display: none;
-}
-.signal-card.show { display: block; }
-.signal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-.signal-pattern {
-  font-size: 18px;
-  font-weight: 800;
-  color: #06b6d4;
-}
-.signal-direction {
-  font-size: 12px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 4px;
-}
-.signal-direction.long { background: rgba(34,197,94,0.15); color: #22c55e; }
-.signal-direction.short { background: rgba(239,68,68,0.15); color: #ef4444; }
-.signal-levels {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.signal-level {
-  text-align: center;
-}
-.signal-level-label {
-  font-size: 10px;
-  color: #64748b;
-  margin-bottom: 2px;
-}
-.signal-level-value {
-  font-size: 16px;
-  font-weight: 700;
-}
-.signal-level-value.entry { color: #06b6d4; }
-.signal-level-value.target { color: #22c55e; }
-.signal-level-value.sl { color: #ef4444; }
-.signal-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-.signal-btn {
-  padding: 14px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  font-family: 'DM Sans', sans-serif;
-  cursor: pointer;
-  border: none;
-}
-.signal-btn.approve {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: white;
-}
-.signal-btn.reject {
-  background: rgba(239,68,68,0.1);
-  border: 1px solid rgba(239,68,68,0.3);
-  color: #f87171;
-}
-
-/* Position Card */
-.position-card {
-  margin: 16px;
-  background: linear-gradient(135deg, rgba(34,197,94,0.1), rgba(16,185,129,0.1));
-  border: 1px solid rgba(34,197,94,0.3);
-  border-radius: 12px;
-  padding: 16px;
-  display: none;
-}
-.position-card.show { display: block; }
-.position-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-.position-pattern {
-  font-size: 18px;
-  font-weight: 800;
-  color: #22c55e;
-}
-.position-status {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 4px;
-  background: rgba(34,197,94,0.15);
-  color: #22c55e;
-}
-.position-levels {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-.position-pnl {
-  text-align: center;
-  padding: 12px;
-  background: rgba(0,0,0,0.2);
-  border-radius: 8px;
-}
-.position-pnl-label {
-  font-size: 10px;
-  color: #64748b;
-  margin-bottom: 2px;
-}
-.position-pnl-value {
-  font-size: 24px;
-  font-weight: 800;
-}
-.position-pnl-value.profit { color: #22c55e; }
-.position-pnl-value.loss { color: #ef4444; }
-
-/* Event Log */
-.event-log {
-  max-height: 200px;
-  overflow-y: auto;
-}
-.event-item {
-  display: flex;
-  gap: 10px;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-  font-size: 12px;
-}
-.event-time {
-  color: #64748b;
-  font-weight: 500;
-  flex-shrink: 0;
-  width: 60px;
-}
-.event-msg {
-  color: #94a3b8;
-}
-.event-msg.active { color: #22c55e; }
-.event-msg.pattern { color: #f59e0b; }
-.event-msg.signal { color: #06b6d4; }
-
-/* Empty state */
-.empty {
-  text-align: center;
-  padding: 20px;
-  color: #475569;
-  font-size: 13px;
-}
-
-/* Last Updated */
-.last-updated {
-  text-align: center;
-  padding: 12px;
-  font-size: 10px;
-  color: #475569;
-}
+body { font-family:'DM Sans',sans-serif; background:#080c14; color:#e2e8f0; min-height:100vh; -webkit-tap-highlight-color:transparent; }
+.header { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:#0a0e17; border-bottom:1px solid rgba(255,255,255,0.06); position:sticky; top:0; z-index:100; }
+.logo { font-size:18px; font-weight:800; letter-spacing:-0.5px; }
+.logo-prism { color:#e2e8f0; }
+.logo-15 { color:#06b6d4; }
+.header-right { display:flex; align-items:center; gap:8px; }
+.live-badge { display:flex; align-items:center; gap:5px; font-size:10px; font-weight:700; padding:4px 10px; border-radius:16px; }
+.live-badge.on { color:#22c55e; background:rgba(34,197,94,0.1); }
+.live-badge.off { color:#64748b; background:rgba(100,116,139,0.1); }
+.live-badge .dot { width:6px; height:6px; border-radius:50%; }
+.live-badge.on .dot { background:#22c55e; animation:pulse 1.5s infinite; }
+.live-badge.off .dot { background:#64748b; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.refresh-btn { width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); color:#94a3b8; font-size:16px; cursor:pointer; }
+.kite-bar { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:rgba(255,255,255,0.02); border-bottom:1px solid rgba(255,255,255,0.04); }
+.kite-status { display:flex; align-items:center; gap:8px; font-size:13px; }
+.kite-dot { width:8px; height:8px; border-radius:50%; background:#ef4444; }
+.kite-dot.on { background:#22c55e; }
+.kite-btn { padding:8px 16px; border-radius:8px; font-size:12px; font-weight:700; border:none; cursor:pointer; }
+.kite-btn.login { background:#22c55e; color:#000; }
+.kite-btn.logout { background:rgba(239,68,68,0.15); color:#ef4444; }
+.connect-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 24px; min-height:60vh; }
+.connect-title { font-size:20px; font-weight:700; margin-bottom:8px; }
+.connect-desc { font-size:13px; color:#64748b; margin-bottom:24px; }
+.connect-input { width:100%; max-width:300px; padding:12px 16px; border-radius:10px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); color:#e2e8f0; font-size:14px; margin-bottom:12px; font-family:'JetBrains Mono',monospace; }
+.connect-btn { width:100%; max-width:300px; padding:12px; border-radius:10px; background:linear-gradient(135deg,#06b6d4,#3b82f6); color:#fff; font-size:14px; font-weight:700; border:none; cursor:pointer; }
+.main { display:none; padding-bottom:20px; }
+.main.show { display:block; }
+.trade-card { margin:12px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); overflow:hidden; }
+.trade-card-header { padding:10px 14px; font-size:11px; font-weight:600; color:#06b6d4; letter-spacing:0.04em; text-align:center; border-bottom:1px solid rgba(255,255,255,0.04); }
+.trade-waiting { padding:24px 16px; text-align:center; }
+.trade-waiting-text { font-size:13px; color:#475569; font-style:italic; }
+.signal-card { display:none; }
+.signal-card.show { display:block; }
+.signal-top { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; }
+.signal-pattern { font-size:18px; font-weight:800; color:#e2e8f0; }
+.signal-dir { font-size:11px; font-weight:700; padding:4px 12px; border-radius:6px; }
+.signal-dir.long { background:rgba(34,197,94,0.15); color:#22c55e; }
+.signal-dir.short { background:rgba(239,68,68,0.15); color:#ef4444; }
+.signal-status { text-align:center; padding:4px 14px 12px; font-size:11px; font-weight:600; }
+.signal-status.pending { color:#f59e0b; }
+.signal-status.limit-pending { color:#fbbf24; }
+.signal-status.executed { color:#22c55e; }
+.signal-levels { display:flex; border-top:1px solid rgba(255,255,255,0.04); }
+.signal-level { flex:1; text-align:center; padding:10px 8px; border-right:1px solid rgba(255,255,255,0.04); }
+.signal-level:last-child { border-right:none; }
+.signal-level-label { font-size:9px; color:#64748b; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; }
+.signal-level-value { font-size:13px; font-weight:700; font-family:'JetBrains Mono',monospace; margin-top:2px; }
+.signal-level-value.entry { color:#06b6d4; }
+.signal-level-value.target { color:#22c55e; }
+.signal-level-value.sl { color:#ef4444; }
+.position-card { display:none; }
+.position-card.show { display:block; }
+.position-pnl { text-align:center; padding:8px 14px 4px; }
+.position-pnl-value { font-size:28px; font-weight:800; font-family:'JetBrains Mono',monospace; }
+.position-pnl-value.profit { color:#22c55e; }
+.position-pnl-value.loss { color:#ef4444; }
+.position-pnl-sub { font-size:11px; color:#64748b; margin-top:2px; padding-bottom:8px; text-align:center; }
+.position-progress { height:4px; background:rgba(255,255,255,0.06); margin:0 14px; border-radius:2px; overflow:hidden; }
+.position-progress-bar { height:100%; border-radius:2px; transition:width 0.5s; }
+.position-progress-bar.to-target { background:#22c55e; }
+.position-progress-bar.to-sl { background:#ef4444; }
+.position-labels { display:flex; justify-content:space-between; padding:4px 14px 8px; font-size:9px; color:#475569; }
+.trade-result { display:none; text-align:center; padding:16px 14px; }
+.trade-result.show { display:block; }
+.trade-result-type { font-size:12px; font-weight:700; margin-bottom:4px; }
+.trade-result-type.target { color:#22c55e; }
+.trade-result-type.sl { color:#ef4444; }
+.trade-result-type.hard_exit { color:#f59e0b; }
+.trade-result-pnl { font-size:22px; font-weight:800; font-family:'JetBrains Mono',monospace; }
+.patterns-section { margin:12px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); overflow:hidden; }
+.patterns-title { padding:10px 14px; font-size:11px; font-weight:700; color:#94a3b8; letter-spacing:0.06em; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.04); }
+.pattern-row { display:flex; justify-content:space-between; align-items:center; padding:8px 14px; border-bottom:1px solid rgba(255,255,255,0.02); }
+.pattern-row:last-child { border-bottom:none; }
+.pattern-name { font-size:12px; font-weight:700; }
+.pattern-desc { font-size:10px; color:#475569; margin-left:8px; }
+.pb { font-size:9px; font-weight:700; padding:3px 8px; border-radius:4px; letter-spacing:0.04em; }
+.pb-fired { background:rgba(34,197,94,0.12); color:#22c55e; }
+.pb-mon { background:rgba(255,255,255,0.06); color:#94a3b8; }
+.pb-block { background:rgba(239,68,68,0.12); color:#ef4444; }
+.pb-exp { background:rgba(245,158,11,0.12); color:#f59e0b; }
+.pb-pend { background:rgba(255,255,255,0.06); color:#94a3b8; }
+.pb-lp { background:rgba(251,191,36,0.12); color:#fbbf24; }
+.pb-ne { background:rgba(249,115,22,0.12); color:#f97316; }
+.pb-nm { background:rgba(255,255,255,0.04); color:#334155; }
+.ps { color:#f472b6; }
+.pd { color:#ec4899; }
+.pb2 { color:#38bdf8; }
+.footer { text-align:center; padding:12px; font-size:10px; color:#334155; }
 </style>
 </head>
 <body>
-
-<!-- Header -->
 <div class="header">
-  <div class="logo">PRISM-15</div>
+  <div class="logo"><span class="logo-prism">PRISM–</span><span class="logo-15">15</span></div>
   <div class="header-right">
-    <div class="live-badge off" id="liveBadge">
-      <span class="dot"></span>
-      <span id="liveText">OFFLINE</span>
-    </div>
-    <button class="refresh-btn" id="refreshBtn" onclick="manualRefresh()">⟳</button>
+    <div class="live-badge off" id="liveBadge"><span class="dot"></span><span id="liveText">OFFLINE</span></div>
+    <button class="refresh-btn" onclick="manualRefresh()">⟳</button>
   </div>
 </div>
-
-<!-- Connect Screen -->
 <div class="connect-screen" id="connectScreen">
   <div class="connect-title">Connect to PRISM-15</div>
-  <div class="connect-desc">Enter your Supabase Anon Key to connect</div>
+  <div class="connect-desc">Enter your Supabase Anon Key</div>
   <input type="password" class="connect-input" id="keyInput" placeholder="Supabase Anon Key">
   <button class="connect-btn" onclick="connect()">Connect</button>
 </div>
-
-<!-- Main Content -->
 <div class="main" id="mainContent">
-  
-  <!-- Kite Bar -->
   <div class="kite-bar">
-    <div class="kite-status">
-      <span class="kite-dot" id="kiteDot"></span>
-      <span id="kiteStatus">Kite: Not connected</span>
-    </div>
+    <div class="kite-status"><span class="kite-dot" id="kiteDot"></span><span id="kiteStatus">Kite: Not connected</span></div>
     <button class="kite-btn login" id="kiteBtn" onclick="handleKite()">Login to Kite</button>
   </div>
-  
-  <!-- NIFTY Price -->
-  <div class="nifty-section">
-    <div class="nifty-label">NIFTY 50</div>
-    <div class="nifty-price" id="niftyPrice">—</div>
-    <div class="nifty-change" id="niftyChange"></div>
-  </div>
-  
-  <!-- Monitoring -->
-  <div class="section">
-    <div class="section-title">📊 Monitoring</div>
-    <div class="monitor-grid" id="monitorGrid">
-      <div class="monitor-item">
-        <div class="monitor-label">C1 Type</div>
-        <div class="monitor-value" id="monC1Type">—</div>
+  <div class="trade-card">
+    <div class="trade-card-header" id="tradeHeader">NIFTY26APRFUT | MIS | 1 lot (65 qty)</div>
+    <div class="trade-waiting" id="tradeWaiting"><div class="trade-waiting-text">Waiting for pattern triggering...</div></div>
+    <div class="signal-card" id="signalCard">
+      <div class="signal-top"><div class="signal-pattern" id="sigPattern">—</div><div class="signal-dir" id="sigDir">—</div></div>
+      <div class="signal-status" id="sigStatus"></div>
+      <div class="signal-levels">
+        <div class="signal-level"><div class="signal-level-label">Entry</div><div class="signal-level-value entry" id="sigEntry">—</div></div>
+        <div class="signal-level"><div class="signal-level-label">Target</div><div class="signal-level-value target" id="sigTarget">—</div></div>
+        <div class="signal-level"><div class="signal-level-label">SL</div><div class="signal-level-value sl" id="sigSL">—</div></div>
       </div>
-      <div class="monitor-item">
-        <div class="monitor-label">CPR Location</div>
-        <div class="monitor-value" id="monCprLoc">—</div>
+    </div>
+    <div class="position-card" id="positionCard">
+      <div class="signal-top"><div class="signal-pattern" id="posPattern">—</div><div class="signal-dir" id="posDir">—</div></div>
+      <div class="position-pnl"><div class="position-pnl-value" id="posPnL">+₹0</div><div class="position-pnl-sub" id="posPnLSub">0 pts × 65 qty</div></div>
+      <div class="position-progress"><div class="position-progress-bar" id="posProgress"></div></div>
+      <div class="position-labels"><span id="posSLLabel">SL</span><span id="posEntryLabel">Entry</span><span id="posTargetLabel">Target</span></div>
+      <div class="signal-levels">
+        <div class="signal-level"><div class="signal-level-label">Entry</div><div class="signal-level-value entry" id="posEntry">—</div></div>
+        <div class="signal-level"><div class="signal-level-label">Target</div><div class="signal-level-value target" id="posTarget">—</div></div>
+        <div class="signal-level"><div class="signal-level-label">SL</div><div class="signal-level-value sl" id="posSL">—</div></div>
       </div>
-      <div class="monitor-item">
-        <div class="monitor-label">Day High</div>
-        <div class="monitor-value" id="monDayHigh">—</div>
-      </div>
-      <div class="monitor-item">
-        <div class="monitor-label">Day Low</div>
-        <div class="monitor-value" id="monDayLow">—</div>
-      </div>
-      <div class="monitor-item">
-        <div class="monitor-label">Active Pattern</div>
-        <div class="monitor-value pattern" id="monActive">None</div>
-      </div>
-      <div class="monitor-item">
-        <div class="monitor-label">Trade Taken</div>
-        <div class="monitor-value no" id="monTrade">NO</div>
-      </div>
-      <div class="monitor-item">
-        <div class="monitor-label">Candles</div>
-        <div class="monitor-value" id="monCandles">0/180</div>
-      </div>
-      <div class="monitor-item">
-        <div class="monitor-label">Session</div>
-        <div class="monitor-value" id="monSession">—</div>
-      </div>
+    </div>
+    <div class="trade-result" id="tradeResult">
+      <div class="trade-result-type" id="resultType">TARGET HIT</div>
+      <div class="trade-result-pnl" id="resultPnL">+₹3,250</div>
     </div>
   </div>
-  
-  <!-- Signal Card -->
-  <div class="signal-card" id="signalCard">
-    <div class="signal-header">
-      <div class="signal-pattern" id="sigPattern">SB1</div>
-      <div class="signal-direction long" id="sigDirection">LONG CE</div>
-    </div>
-    <div class="signal-levels">
-      <div class="signal-level">
-        <div class="signal-level-label">Entry</div>
-        <div class="signal-level-value entry" id="sigEntry">—</div>
-      </div>
-      <div class="signal-level">
-        <div class="signal-level-label">Target</div>
-        <div class="signal-level-value target" id="sigTarget">—</div>
-      </div>
-      <div class="signal-level">
-        <div class="signal-level-label">SL</div>
-        <div class="signal-level-value sl" id="sigSL">—</div>
-      </div>
-    </div>
-    <div class="signal-buttons">
-      <button class="signal-btn approve" onclick="approveSignal()">✓ APPROVE</button>
-      <button class="signal-btn reject" onclick="rejectSignal()">✗ REJECT</button>
-    </div>
+  <div class="patterns-section">
+    <div class="patterns-title" id="patternsTitle">PATTERNS</div>
+    <div id="patternList"></div>
   </div>
-  
-  <!-- Position Card -->
-  <div class="position-card" id="positionCard">
-    <div class="position-header">
-      <div class="position-pattern" id="posPattern">SB1</div>
-      <div class="position-status">OPEN</div>
-    </div>
-    <div class="position-levels">
-      <div class="signal-level">
-        <div class="signal-level-label">Entry</div>
-        <div class="signal-level-value entry" id="posEntry">—</div>
-      </div>
-      <div class="signal-level">
-        <div class="signal-level-label">Target</div>
-        <div class="signal-level-value target" id="posTarget">—</div>
-      </div>
-      <div class="signal-level">
-        <div class="signal-level-label">SL</div>
-        <div class="signal-level-value sl" id="posSL">—</div>
-      </div>
-    </div>
-    <div class="position-pnl">
-      <div class="position-pnl-label">Unrealized P&L</div>
-      <div class="position-pnl-value" id="posPnL">—</div>
-    </div>
-  </div>
-  
-  <!-- Event Log -->
-  <div class="section">
-    <div class="section-title">📋 Event Log</div>
-    <div class="event-log" id="eventLog">
-      <div class="empty">No events yet</div>
-    </div>
-  </div>
-  
-  <div class="last-updated">Last updated: <span id="lastUpdated">—</span></div>
-  
+  <div class="footer">Last updated: <span id="lastUpdated">—</span></div>
 </div>
-
 <script>
-// ═══════════════════════════════════════════════════
-// PRISM-15 MOBILE DASHBOARD
-// ═══════════════════════════════════════════════════
-
-var SUPABASE_URL = "https://drandawdwqcsmbxoaras.supabase.co";
-var KEY = null;
-var refreshInterval = null;
-var currentSignal = null;
-var currentPosition = null;
-var currentNiftyPrice = null;
-var currentSettings = null;
-var accessToken = null;
-var kiteUserId = null;
-
-// Kite API
-var KITE_API_KEY = "toric63avf1rqsz2";
-var KITE_LOGIN_URL = "https://kite.zerodha.com/connect/login?v=3&api_key=" + KITE_API_KEY;
-
-// ─── CONNECT ─────────────────────────────────────
-
-function connect() {
-  var key = document.getElementById("keyInput").value.trim();
-  if (!key) { alert("Please enter Supabase Anon Key"); return; }
-  
-  KEY = key;
-  localStorage.setItem("prism_key", key);
-  
-  document.getElementById("connectScreen").style.display = "none";
-  document.getElementById("mainContent").classList.add("show");
-  
-  // Check for Kite token
-  checkKiteToken();
-  
-  // Start fetching
-  fetchData();
-  refreshInterval = setInterval(fetchData, 3000);
-  
-  updateLiveBadge(true);
-}
-
-// Check saved key on load
-document.addEventListener("DOMContentLoaded", function() {
-  var savedKey = localStorage.getItem("prism_key");
-  if (savedKey) {
-    document.getElementById("keyInput").value = savedKey;
-  }
-  
-  // Check for Kite callback
-  var params = new URLSearchParams(window.location.search);
-  
-  // Handle kite_success (redirected from desktop after OAuth)
-  if (params.has("kite_success")) {
-    var userId = params.get("user_id");
-    window.history.replaceState({}, document.title, window.location.pathname);
-    // Auto-connect if we have saved key
-    if (savedKey) {
-      setTimeout(function() {
-        connect();
-      }, 100);
-    }
-  }
-  
-  // Handle kite_error
-  if (params.has("kite_error")) {
-    var error = params.get("kite_error");
-    window.history.replaceState({}, document.title, window.location.pathname);
-    alert("Kite login failed: " + error);
-  }
-});
-
-// ─── API HELPERS ─────────────────────────────────
-
-async function Q(table, query) {
-  var res = await fetch(SUPABASE_URL + "/rest/v1/" + table + "?" + query, {
-    headers: { "apikey": KEY, "Authorization": "Bearer " + KEY }
-  });
-  return res.json();
-}
-
-async function PATCH(table, data, filter) {
-  var res = await fetch(SUPABASE_URL + "/rest/v1/" + table + "?" + filter, {
-    method: "PATCH",
-    headers: {
-      "apikey": KEY,
-      "Authorization": "Bearer " + KEY,
-      "Content-Type": "application/json",
-      "Prefer": "return=minimal"
-    },
-    body: JSON.stringify(data)
-  });
-  return res.ok;
-}
-
-// ─── KITE ────────────────────────────────────────
-
-async function checkKiteToken() {
-  if (!KEY) return;
-  
-  var today = new Date().toISOString().split("T")[0];
-  try {
-    var tokens = await Q("kite_auth", "select=*&token_date=eq." + today);
-    if (tokens.length > 0) {
-      accessToken = tokens[0].access_token;
-      kiteUserId = tokens[0].user_id;
-      updateKiteUI(true);
-      return true;
-    } else {
-      updateKiteUI(false);
-      return false;
-    }
-  } catch (err) {
-    console.error("Kite auth check failed:", err);
-    updateKiteUI(false);
-    return false;
-  }
-}
-
-function handleKite() {
-  if (accessToken) {
-    // Logout
-    accessToken = null;
-    kiteUserId = null;
-    localStorage.removeItem("kite_access_token");
-    localStorage.removeItem("kite_user_id");
-    updateKiteUI(false);
-  } else {
-    // Login - set flag so desktop knows to redirect back to mobile
-    localStorage.setItem("kite_login_from", "mobile");
-    window.location.href = KITE_LOGIN_URL;
-  }
-}
-
-function updateKiteUI(loggedIn) {
-  var dot = document.getElementById("kiteDot");
-  var status = document.getElementById("kiteStatus");
-  var btn = document.getElementById("kiteBtn");
-  
-  if (loggedIn) {
-    dot.classList.add("on");
-    status.textContent = "Kite: " + kiteUserId;
-    btn.textContent = "Logout";
-    btn.className = "kite-btn logout";
-  } else {
-    dot.classList.remove("on");
-    status.textContent = "Kite: Not connected";
-    btn.textContent = "Login to Kite";
-    btn.className = "kite-btn login";
-  }
-}
-
-// ─── FETCH DATA ──────────────────────────────────
-
-async function fetchData() {
-  if (!KEY) return;
-  
-  try {
-    // Get today's session
-    var today = new Date().toISOString().split("T")[0];
-    var sessions = await Q("sessions", "select=*&trade_date=eq." + today + "&limit=1");
-    
-    if (!sessions || !sessions.length) {
-      updateMonitoring(null, null);
-      updateLiveBadge(false);
-      return;
-    }
-    
-    var session = sessions[0];
-    var sid = session.id;
-    
-    updateLiveBadge(session.status === "scanning" || session.status === "active");
-    
-    // Fetch data in parallel
-    var results = await Promise.all([
-      Q("session_state", "select=*&session_id=eq." + sid + "&limit=1"),
-      Q("candles", "select=*&session_id=eq." + sid + "&order=candle_number.desc&limit=1"),
-      Q("signals", "select=*&session_id=eq." + sid + "&status=eq.pending&limit=1"),
-      Q("positions", "select=*&session_id=eq." + sid + "&status=eq.open&limit=1"),
-      Q("engine_logs", "select=*&session_id=eq." + sid + "&order=created_at.desc&limit=15"),
-      Q("pivot_levels", "select=pdc&session_id=eq." + sid + "&limit=1"),
-      Q("settings", "select=instrument_type&limit=1")
-    ]);
-    
-    var state = results[0][0] || null;
-    var lastCandle = results[1][0] || null;
-    var pendingSignal = results[2][0] || null;
-    var openPosition = results[3][0] || null;
-    var logs = results[4] || [];
-    var pivotData = results[5][0] || null;
-    currentSettings = results[6][0] || null;
-    
-    // Update NIFTY price (change from PDC, fallback to last candle open)
-    if (lastCandle) {
-      var refPrice = (pivotData && pivotData.pdc) ? pivotData.pdc : lastCandle.open;
-      updateNiftyPrice(lastCandle.close, refPrice);
-      currentNiftyPrice = lastCandle.close;
-    }
-    
-    // Update monitoring
-    updateMonitoring(state, session);
-    
-    // Update signal card
-    if (pendingSignal && !state.trade_taken) {
-      showSignalCard(pendingSignal);
-    } else {
-      hideSignalCard();
-    }
-    
-    // Update position card
-    if (openPosition) {
-      showPositionCard(openPosition);
-    } else {
-      hidePositionCard();
-    }
-    
-    // Update event log
-    updateEventLog(logs);
-    
-    // Update timestamp
-    document.getElementById("lastUpdated").textContent = new Date().toLocaleTimeString();
-    
-  } catch (e) {
-    console.error("Fetch error:", e);
-  }
-}
-
-function manualRefresh() {
-  var btn = document.getElementById("refreshBtn");
-  btn.style.transform = "rotate(360deg)";
-  setTimeout(function() { btn.style.transform = ""; }, 300);
-  fetchData();
-}
-
-// ─── UPDATE UI ───────────────────────────────────
-
-function updateLiveBadge(isLive) {
-  var badge = document.getElementById("liveBadge");
-  var text = document.getElementById("liveText");
-  if (isLive) {
-    badge.classList.remove("off");
-    text.textContent = "LIVE";
-  } else {
-    badge.classList.add("off");
-    text.textContent = "OFFLINE";
-  }
-}
-
-function updateNiftyPrice(price, openPrice) {
-  var priceEl = document.getElementById("niftyPrice");
-  var changeEl = document.getElementById("niftyChange");
-  
-  var change = price - openPrice;
-  var changePct = ((change / openPrice) * 100).toFixed(2);
-  
-  priceEl.textContent = (+price).toFixed(2);
-  priceEl.className = "nifty-price " + (change >= 0 ? "up" : "down");
-  
-  changeEl.textContent = (change >= 0 ? "+" : "") + change.toFixed(2) + " (" + changePct + "%)";
-  changeEl.className = "nifty-change " + (change >= 0 ? "up" : "down");
-}
-
-function updateMonitoring(state, session) {
-  var c1Type = document.getElementById("monC1Type");
-  var cprLoc = document.getElementById("monCprLoc");
-  var dayHigh = document.getElementById("monDayHigh");
-  var dayLow = document.getElementById("monDayLow");
-  var active = document.getElementById("monActive");
-  var trade = document.getElementById("monTrade");
-  var candles = document.getElementById("monCandles");
-  var sessionEl = document.getElementById("monSession");
-  
-  if (!state) {
-    c1Type.textContent = "—";
-    c1Type.className = "monitor-value";
-    cprLoc.textContent = "—";
-    dayHigh.textContent = "—";
-    dayLow.textContent = "—";
-    active.textContent = "None";
-    trade.textContent = "NO";
-    trade.className = "monitor-value no";
-    candles.textContent = "0/180";
-    sessionEl.textContent = session ? session.status : "—";
-    return;
-  }
-  
-  var c1 = state.c1_type || "—";
-  c1Type.textContent = c1.toUpperCase();
-  c1Type.className = "monitor-value " + (c1 === "buyer" ? "buyer" : c1 === "seller" ? "seller" : "");
-  
-  cprLoc.textContent = (state.c1_close_vs_cpr || "—").replace(/_/g, " ");
-  dayHigh.textContent = state.day_high ? (+state.day_high).toFixed(2) : "—";
-  dayLow.textContent = state.day_low ? (+state.day_low).toFixed(2) : "—";
-  
-  var activePattern = state.active_pattern || state.seller_pattern_fired || state.buyer_pattern_fired || "None";
-  active.textContent = activePattern;
-  active.className = "monitor-value " + (activePattern !== "None" ? "pattern" : "");
-  
-  var tradeTaken = state.trade_taken;
-  trade.textContent = tradeTaken ? "YES" : "NO";
-  trade.className = "monitor-value " + (tradeTaken ? "yes" : "no");
-  
-  candles.textContent = (state.candles_processed || 0) + "/180";
-  sessionEl.textContent = session ? session.status : "—";
-}
-
-function showSignalCard(signal) {
-  currentSignal = signal;
-  var card = document.getElementById("signalCard");
-  
-  document.getElementById("sigPattern").textContent = signal.pattern;
-  
-  var dirEl = document.getElementById("sigDirection");
-  var isFut = currentSettings && currentSettings.instrument_type === 'FUTURES';
-  dirEl.textContent = signal.direction + " " + (isFut ? 'FUT' : signal.option_type);
-  dirEl.className = "signal-direction " + (signal.direction === "LONG" ? "long" : "short");
-  
-  document.getElementById("sigEntry").textContent = (+signal.entry_level).toFixed(2);
-  document.getElementById("sigTarget").textContent = (+signal.target_level).toFixed(2);
-  document.getElementById("sigSL").textContent = (+signal.sl_level).toFixed(2);
-  
-  card.classList.add("show");
-}
-
-function hideSignalCard() {
-  currentSignal = null;
-  document.getElementById("signalCard").classList.remove("show");
-}
-
-function showPositionCard(position) {
-  currentPosition = position;
-  var card = document.getElementById("positionCard");
-  
-  document.getElementById("posPattern").textContent = position.pattern || "—";
-  document.getElementById("posEntry").textContent = (+position.entry_price).toFixed(2);
-  document.getElementById("posTarget").textContent = (+position.target_price).toFixed(2);
-  document.getElementById("posSL").textContent = (+position.sl_price).toFixed(2);
-  
-  // Calculate P&L
-  if (currentNiftyPrice && position.entry_price) {
-    var pnl = currentNiftyPrice - position.entry_price;
-    if (position.direction === "SHORT") pnl = -pnl;
-    
-    var pnlEl = document.getElementById("posPnL");
-    pnlEl.textContent = (pnl >= 0 ? "+" : "") + pnl.toFixed(2) + " pts";
-    pnlEl.className = "position-pnl-value " + (pnl >= 0 ? "profit" : "loss");
-  }
-  
-  card.classList.add("show");
-}
-
-function hidePositionCard() {
-  currentPosition = null;
-  document.getElementById("positionCard").classList.remove("show");
-}
-
-function updateEventLog(logs) {
-  var container = document.getElementById("eventLog");
-  
-  if (!logs || !logs.length) {
-    container.innerHTML = '<div class="empty">No events yet</div>';
-    return;
-  }
-  
-  var html = "";
-  logs.forEach(function(log) {
-    var time = log.created_at ? new Date(log.created_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "—";
-    var msg = log.message || "";
-    
-    var msgClass = "";
-    if (msg.toLowerCase().includes("signal")) msgClass = "signal";
-    else if (msg.toLowerCase().includes("pattern") || msg.toLowerCase().includes("detected")) msgClass = "pattern";
-    else if (msg.toLowerCase().includes("active") || msg.toLowerCase().includes("started")) msgClass = "active";
-    
-    html += '<div class="event-item">';
-    html += '<span class="event-time">' + time + '</span>';
-    html += '<span class="event-msg ' + msgClass + '">' + msg + '</span>';
-    html += '</div>';
-  });
-  
-  container.innerHTML = html;
-}
-
-// ─── SIGNAL ACTIONS ──────────────────────────────
-
-async function approveSignal() {
-  if (!currentSignal) return;
-  
-  try {
-    await PATCH("signals", { status: "approved" }, "id=eq." + currentSignal.id);
-    hideSignalCard();
-    fetchData();
-  } catch (e) {
-    alert("Failed to approve signal");
-  }
-}
-
-async function rejectSignal() {
-  if (!currentSignal) return;
-  
-  try {
-    await PATCH("signals", { status: "rejected" }, "id=eq." + currentSignal.id);
-    hideSignalCard();
-    fetchData();
-  } catch (e) {
-    alert("Failed to reject signal");
-  }
-}
-
+var SUPABASE_URL="https://drandawdwqcsmbxoaras.supabase.co";
+var KITE_API_KEY="toric63avf1rqsz2";
+var KITE_LOGIN_URL="https://kite.zerodha.com/connect/login?v=3&api_key="+KITE_API_KEY;
+var KEY=null,refreshInterval=null,currentNiftyPrice=null,accessToken=null,kiteUserId=null;
+var PM={SB1:{d:"C1 High Breakout (Outside)"},SB2:{d:"C1 High Breakout (Inside)"},SA1:{d:"Low Break Reversal"},SC1:{d:"Multi-Pivot Breakdown"},SD1:{d:"Above PDH"},SD2:{d:"Below PDH, Above CPR"},SD3:{d:"Inside CPR"},SD4:{d:"Below CPR, Above PDL"},SD5:{d:"Below PDL"},BA1:{d:"Pivot Touch Rejection"},BB1:{d:"PE Reference High"},BC1:{d:"CPR Inside Pullback"},BC2:{d:"Above CPR Top Limit"}};
+function connect(){var k=document.getElementById("keyInput").value.trim();if(!k){alert("Enter key");return}KEY=k;localStorage.setItem("prism_key",k);document.getElementById("connectScreen").style.display="none";document.getElementById("mainContent").classList.add("show");checkKiteToken();fetchData();refreshInterval=setInterval(fetchData,3000);setLive(true)}
+document.addEventListener("DOMContentLoaded",function(){var s=localStorage.getItem("prism_key");if(s)document.getElementById("keyInput").value=s;var p=new URLSearchParams(window.location.search);if(p.has("kite_success")){window.history.replaceState({},"",window.location.pathname);if(s)setTimeout(connect,100)}if(p.has("kite_error")){window.history.replaceState({},"",window.location.pathname);alert("Kite login failed: "+p.get("kite_error"))}});
+function manualRefresh(){if(KEY)fetchData()}
+async function Q(t,q){var r=await fetch(SUPABASE_URL+"/rest/v1/"+t+"?"+q,{headers:{"apikey":KEY,"Authorization":"Bearer "+KEY}});return r.json()}
+async function checkKiteToken(){if(!KEY)return;var d=new Date(),ist=new Date(d.getTime()+(5.5*60*60*1000)),ds=ist.toISOString().split("T")[0];try{var t=await Q("kite_auth","select=*&token_date=eq."+ds);if(t.length>0){accessToken=t[0].access_token;kiteUserId=t[0].user_id;updateKiteUI(true)}else{updateKiteUI(false)}}catch(e){updateKiteUI(false)}}
+function handleKite(){if(accessToken){accessToken=null;kiteUserId=null;updateKiteUI(false)}else{localStorage.setItem("kite_login_from","mobile");window.location.href=KITE_LOGIN_URL}}
+function updateKiteUI(on){var d=document.getElementById("kiteDot"),s=document.getElementById("kiteStatus"),b=document.getElementById("kiteBtn");if(on){d.classList.add("on");s.textContent="Kite: "+kiteUserId;b.textContent="Logout";b.className="kite-btn logout"}else{d.classList.remove("on");s.textContent="Kite: Not connected";b.textContent="Login to Kite";b.className="kite-btn login"}}
+function setLive(on){var b=document.getElementById("liveBadge"),t=document.getElementById("liveText");b.className="live-badge "+(on?"on":"off");t.textContent=on?"LIVE":"OFFLINE"}
+function F(v){return v!=null?Number(v).toFixed(2):"—"}
+async function fetchData(){if(!KEY)return;try{var d=new Date(),ist=new Date(d.getTime()+(5.5*60*60*1000)),ds=ist.toISOString().split("T")[0];var sessions=await Q("sessions","select=*&trade_date=eq."+ds+"&limit=1");if(!sessions||!sessions.length){showWaiting("No session — waiting for 9:15 AM");setLive(false);renderPatterns(null);return}var session=sessions[0],sid=session.id;setLive(session.status==="scanning"||session.status==="active");var r=await Promise.all([Q("session_state","select=*&session_id=eq."+sid+"&limit=1"),Q("candles","select=close&session_id=eq."+sid+"&order=candle_number.desc&limit=1"),Q("signals","select=*&session_id=eq."+sid+"&order=created_at.desc&limit=1"),Q("positions","select=*&session_id=eq."+sid+"&order=created_at.desc&limit=1"),Q("settings","select=lot_size&limit=1")]);var state=r[0][0]||null,lc=r[1][0]||null,signal=r[2][0]||null,pos=r[3][0]||null,settings=r[4][0]||null;if(lc)currentNiftyPrice=lc.close;var sym=(state&&state.trading_symbol)?state.trading_symbol:"NIFTY26APRFUT";var lots=(settings&&settings.lot_size)?settings.lot_size:1;document.getElementById("tradeHeader").textContent=sym+" | MIS | "+lots+" lot ("+(lots*65)+" qty)";if(pos&&pos.status==="open"){showPosition(pos,state)}else if(pos&&pos.status==="closed"){showResult(pos)}else if(signal&&(signal.status==="pending"||signal.status==="executing")){showSignal(signal)}else if(state&&state.pending_limit_entry_level){showLimitPending(signal,state)}else if(state){var cn=state.candles_processed||0;showWaiting(session.status==="completed"?"Session completed — no trade":"Scanning... C"+cn+"/180")}else{showWaiting("Waiting for first candle (9:15 AM)")}renderPatterns(state);document.getElementById("lastUpdated").textContent=new Date().toLocaleTimeString("en-IN",{hour12:false})}catch(e){console.error(e)}}
+function hideAll(){document.getElementById("tradeWaiting").style.display="none";document.getElementById("signalCard").className="signal-card";document.getElementById("positionCard").className="position-card";document.getElementById("tradeResult").className="trade-result"}
+function showWaiting(t){hideAll();document.getElementById("tradeWaiting").style.display="block";document.getElementById("tradeWaiting").querySelector(".trade-waiting-text").textContent=t}
+function showSignal(sig){hideAll();document.getElementById("signalCard").className="signal-card show";document.getElementById("sigPattern").textContent=sig.pattern;var d=sig.direction||"—",de=document.getElementById("sigDir");de.textContent=d;de.className="signal-dir "+d.toLowerCase();var se=document.getElementById("sigStatus");se.textContent=sig.status==="pending"?"⏳ Pending approval":"⚡ Auto-executing...";se.className="signal-status "+(sig.status==="pending"?"pending":"executed");document.getElementById("sigEntry").textContent=F(sig.entry_level);document.getElementById("sigTarget").textContent=F(sig.target_level);document.getElementById("sigSL").textContent=F(sig.sl_level)}
+function showLimitPending(sig,st){hideAll();document.getElementById("signalCard").className="signal-card show";document.getElementById("sigPattern").textContent=st.pending_limit_pattern||(sig?sig.pattern:"—");var d=st.pending_limit_direction||(sig?sig.direction:"—"),de=document.getElementById("sigDir");de.textContent=d;de.className="signal-dir "+(d||"").toLowerCase();var se=document.getElementById("sigStatus");se.textContent="📍 LIMIT PENDING — spot must reach "+F(st.pending_limit_entry_level);se.className="signal-status limit-pending";document.getElementById("sigEntry").textContent=F(st.pending_limit_entry_level);document.getElementById("sigTarget").textContent=sig?F(sig.target_level):"—";document.getElementById("sigSL").textContent=sig?F(sig.sl_level):"—"}
+function showPosition(pos,st){hideAll();document.getElementById("positionCard").className="position-card show";document.getElementById("posPattern").textContent=pos.pattern||(st?st.active_pattern:"")||"OPEN";var d=pos.direction,de=document.getElementById("posDir");de.textContent=d;de.className="signal-dir "+d.toLowerCase();var entry=pos.entry_price_actual||pos.entry_price_nifty,cur=currentNiftyPrice||entry,pts=d==="LONG"?cur-entry:entry-cur,qty=pos.entry_quantity||65,rs=pts*qty;var pe=document.getElementById("posPnL");pe.textContent=(rs>=0?"+":"")+"₹"+Math.abs(rs).toLocaleString("en-IN",{maximumFractionDigits:0});pe.className="position-pnl-value "+(rs>=0?"profit":"loss");document.getElementById("posPnLSub").textContent=(pts>=0?"+":"")+pts.toFixed(1)+" pts × "+qty+" qty";var tgt=pos.target_level,sl=pos.sl_level,rng=tgt-sl,prog=Math.max(0,Math.min(100,((cur-sl)/rng)*100));var bar=document.getElementById("posProgress");bar.style.width=prog+"%";bar.className="position-progress-bar "+(pts>=0?"to-target":"to-sl");document.getElementById("posSLLabel").textContent="SL: "+F(sl);document.getElementById("posEntryLabel").textContent="Entry: "+F(entry);document.getElementById("posTargetLabel").textContent="Target: "+F(tgt);document.getElementById("posEntry").textContent=F(entry);document.getElementById("posTarget").textContent=F(tgt);document.getElementById("posSL").textContent=F(sl)}
+function showResult(pos){hideAll();document.getElementById("tradeResult").className="trade-result show";var t=pos.exit_type||"closed",te=document.getElementById("resultType"),lb={target:"TARGET HIT ✓",sl:"STOP LOSS ✗",hard_exit:"HARD EXIT ⏰",manual:"MANUAL EXIT"};te.textContent=lb[t]||t.toUpperCase();te.className="trade-result-type "+t;var pnl=Number(pos.pnl_points||0),qty=pos.entry_quantity||65,rs=pnl*qty;var pe=document.getElementById("resultPnL");pe.textContent=(rs>=0?"+":"")+"₹"+Math.abs(rs).toLocaleString("en-IN",{maximumFractionDigits:0})+" ("+(pnl>=0?"+":"")+pnl.toFixed(1)+" pts)";pe.style.color=rs>=0?"#22c55e":"#ef4444"}
+function renderPatterns(st){var el=document.getElementById("patternList");if(!st||!st.c1_type){el.innerHTML='<div style="padding:16px;text-align:center;color:#334155;font-size:12px">No session data</div>';document.getElementById("patternsTitle").textContent="PATTERNS";return}var cn=st.candles_processed||0;document.getElementById("patternsTitle").textContent=st.c1_type==="seller"?"SELLER PATTERNS":"BUYER PATTERNS";var rows=[];if(st.c1_type==="seller"){var dl={SB1:4,SB2:60,SA1:8,SC1:20};["SB1","SB2","SA1","SC1"].forEach(function(p){var conf=st[p.toLowerCase()+"_confirmed"],fired=st.seller_pattern_fired,s,b;if(conf){s="FIRED";b="fired"}else if(fired&&fired!=="SA1_NO_TRADE"){s="BLOCKED";b="block"}else if(cn>(dl[p]||60)){s="EXPIRED";b="exp"}else{s="MONITORING";b="mon"}rows.push({p:p,s:s,b:b,o:conf?0:s==="MONITORING"?1:2,c:"ps"})});["SD1","SD2","SD3","SD4","SD5"].forEach(function(p){var s,b;if(st.sd_pattern===p){if(st.trade_taken){s="FIRED";b="fired"}else if(st.pending_limit_entry_level!=null){s="LIMIT PENDING";b="lp"}else{s="NO ENTRY";b="ne"}}else if(st.sd_pattern_evaluated||cn>=20){s="—";b="nm"}else{s="PENDING (C20)";b="pend"}if(st.seller_pattern_fired&&st.seller_pattern_fired!=="SA1_NO_TRADE"&&st.sd_pattern!==p){s="BLOCKED";b="block"}rows.push({p:p,s:s,b:b,o:s==="FIRED"||s==="LIMIT PENDING"?0:s==="MONITORING"||s==="PENDING (C20)"?1:2,c:"pd"})})}else{var dl={BA1:20,BB1:40,BC1:20,BC2:60};["BA1","BB1","BC1","BC2"].forEach(function(p){var conf=st[p.toLowerCase()+"_confirmed"],fired=st.buyer_pattern_fired,s,b;if(conf){s="FIRED";b="fired"}else if(fired){s="BLOCKED";b="block"}else if(cn>(dl[p]||60)){s="EXPIRED";b="exp"}else{s="MONITORING";b="mon"}rows.push({p:p,s:s,b:b,o:conf?0:s==="MONITORING"?1:2,c:"pb2"})})}rows.sort(function(a,b){return a.o-b.o});var h="";rows.forEach(function(r){h+='<div class="pattern-row"><div><span class="pattern-name '+r.c+'">'+r.p+'</span><span class="pattern-desc">'+(PM[r.p]?PM[r.p].d:"")+'</span></div><span class="pb pb-'+r.b+'">'+r.s+'</span></div>'});el.innerHTML=h}
 </script>
 </body>
 </html>
