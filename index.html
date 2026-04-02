@@ -3898,7 +3898,7 @@ function v13UpdateMonitoringLog(st, logs) {
       if (st.sd_pattern===p) {
         if (st.trade_taken) { s="FIRED"; v="bs"; order=0; }
         else if (st.pending_limit_entry_level!=null) { s="LIMIT PENDING"; v="bp"; order=0; }
-        else { s="NO ENTRY"; v="bw"; order=2; }
+        else { s="NO ENTRY"; v="bw"; order=0; }
       } else { s = st.sd_pattern_evaluated ? "no match" : cn >= 20 ? "no match" : "pending (C20)"; v="bd"; order=2; }
       if (st.seller_pattern_fired && st.seller_pattern_fired!=="SA1_NO_TRADE" && st.sd_pattern!==p) { s="BLOCKED"; v="bx"; order=2; }
       sdRows.push({p:p, s:s, v:v, order:order});
@@ -4198,7 +4198,7 @@ function logUpdatePatternStatus(st) {
       if (st.sd_pattern===p) {
         if (st.trade_taken) { s="FIRED"; v="bs"; order=0; }
         else if (st.pending_limit_entry_level!=null) { s="LIMIT PENDING"; v="bp"; order=0; }
-        else { s="NO ENTRY"; v="bw"; order=2; }
+        else { s="NO ENTRY"; v="bw"; order=0; }
       } else { s = st.sd_pattern_evaluated ? "no match" : cn >= 20 ? "no match" : "pending (C20)"; v="bd"; order=2; }
       if (st.seller_pattern_fired && st.seller_pattern_fired!=="SA1_NO_TRADE" && st.sd_pattern!==p) { s="BLOCKED"; v="bx"; order=2; }
       sdRows.push({p:p, s:s, v:v, order:order});
