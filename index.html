@@ -300,7 +300,7 @@ td{padding:7px 8px;color:#cbd5e1;white-space:nowrap;border-bottom:1px solid rgba
 .mon-block::-webkit-scrollbar-track{background:transparent}
 .mon-block::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
 .mon-header{padding:10px 12px 0 12px}
-.mon-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:0 12px 8px 12px}
+.mon-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:0 12px 8px 12px}
 .mon-scroll{overflow-y:auto;max-height:180px;padding:0 12px 10px 12px}
 .mon-scroll::-webkit-scrollbar{width:3px}
 .mon-scroll::-webkit-scrollbar-track{background:transparent}
@@ -369,6 +369,55 @@ td{padding:7px 8px;color:#cbd5e1;white-space:nowrap;border-bottom:1px solid rgba
 
 .bottom-data{display:grid;grid-template-columns:65% 35%;background:#0a0e17;border-top:2px solid #1e293b;padding:16px 20px}
 .candles-box{padding:12px;border-right:1px solid rgba(255,255,255,0.06)}
+.right-stack{display:flex;flex-direction:column;gap:14px}
+.pivots-box{padding:12px}
+.trade-levels-box{padding:12px;border-top:1px solid rgba(255,255,255,0.06)}
+.tl-header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:8px}
+.tl-pat{font-size:14px;font-weight:800;letter-spacing:0.02em;font-family:'JetBrains Mono',monospace}
+.tl-status{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;font-family:'DM Sans',sans-serif}
+.tl-status.target{background:rgba(34,197,94,0.14);color:#22c55e;border:1px solid rgba(34,197,94,0.25)}
+.tl-status.sl{background:rgba(239,68,68,0.14);color:#ef4444;border:1px solid rgba(239,68,68,0.25)}
+.tl-status.he{background:rgba(245,158,11,0.14);color:#f59e0b;border:1px solid rgba(245,158,11,0.25)}
+.tl-status.man{background:rgba(167,139,250,0.14);color:#a78bfa;border:1px solid rgba(167,139,250,0.25)}
+.tl-status.open{background:rgba(6,182,212,0.14);color:#06b6d4;border:1px solid rgba(6,182,212,0.25)}
+.tl-status.pending{background:rgba(167,139,250,0.10);color:#a78bfa;border:1px solid rgba(167,139,250,0.2)}
+.tl-status.detected{background:rgba(100,116,139,0.12);color:#94a3b8;border:1px solid rgba(100,116,139,0.2)}
+.tl-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:12px}
+.tl-row:not(:last-child){border-bottom:1px dashed rgba(255,255,255,0.03)}
+.tl-l{color:#64748b;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:0.06em;font-family:'DM Sans',sans-serif}
+.tl-v{color:#e2e8f0;font-weight:700;font-family:'JetBrains Mono',monospace}
+.tl-v.green{color:#22c55e}
+.tl-v.red{color:#ef4444}
+.tl-v.amber{color:#f59e0b}
+.tl-v.dim{color:#64748b;font-weight:500}
+.tl-pnl-row{margin-top:8px;padding:8px 10px;background:rgba(0,0,0,0.2);border-radius:5px;display:flex;justify-content:space-between;align-items:center}
+.tl-pnl-row.profit{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2)}
+.tl-pnl-row.loss{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2)}
+.tl-empty{padding:18px 8px;text-align:center;color:#475569;font-size:11px;font-style:italic}
+/* Pattern Verification panel */
+.verify-box{padding:12px;border-top:1px solid rgba(255,255,255,0.06)}
+.vf-header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:8px}
+.vf-pat{font-size:13px;font-weight:800;letter-spacing:0.02em;font-family:'JetBrains Mono',monospace}
+.vf-summary{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;font-family:'DM Sans',sans-serif}
+.vf-summary.ok{background:rgba(34,197,94,0.14);color:#22c55e;border:1px solid rgba(34,197,94,0.25)}
+.vf-summary.fail{background:rgba(239,68,68,0.14);color:#ef4444;border:1px solid rgba(239,68,68,0.25)}
+.vf-summary.partial{background:rgba(245,158,11,0.14);color:#f59e0b;border:1px solid rgba(245,158,11,0.25)}
+.vf-rule{padding:7px 8px;font-size:11px;border-bottom:1px dashed rgba(255,255,255,0.03);display:grid;grid-template-columns:18px 1fr;column-gap:8px;align-items:start}
+.vf-rule:last-child{border-bottom:none}
+.vf-rule .vf-icon{font-weight:700;font-family:'JetBrains Mono',monospace;text-align:center;line-height:1.4}
+.vf-rule.pass .vf-icon{color:#22c55e}
+.vf-rule.fail .vf-icon{color:#ef4444}
+.vf-rule.unk .vf-icon{color:#64748b}
+.vf-desc{color:#cbd5e1;font-weight:600;line-height:1.4}
+.vf-actual{color:#64748b;font-size:10px;font-family:'JetBrains Mono',monospace;margin-top:2px;letter-spacing:-0.01em}
+.vf-rule.pass .vf-actual{color:#94a3b8}
+.vf-rule.fail .vf-actual{color:#f87171}
+.vf-empty{padding:18px 8px;text-align:center;color:#475569;font-size:11px;font-style:italic}
+.vf-warn{padding:8px 10px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:4px;font-size:10px;color:#f59e0b;margin-top:6px}
+/* Closed position card decoration */
+.v13-position-card.closed{position:relative}
+.v13-position-card.closed .v13-btn-exit{display:none !important}
+.v13-position-card.closed::after{content:'CLOSED';position:absolute;top:10px;right:12px;font-size:9px;font-weight:700;letter-spacing:0.10em;color:#94a3b8;background:rgba(100,116,139,0.15);padding:2px 8px;border-radius:3px;border:1px solid rgba(100,116,139,0.2)}
 .candles-buttons{display:flex;gap:8px;margin-top:10px}
 .pivots-box{padding:12px}
 .load-more-btn{width:100%;padding:8px;margin-top:8px;background:#1e293b;border:none;color:#94a3b8;font-size:12px;border-radius:4px;cursor:pointer}
@@ -414,6 +463,72 @@ td{padding:7px 8px;color:#cbd5e1;white-space:nowrap;border-bottom:1px solid rgba
 .perf-metric-value.red{color:#ef4444}
 .perf-metric-value.orange{color:#f59e0b}
 .perf-metric-value.cyan{color:#06b6d4}
+/* Real Trades Panel — split into two visually distinct blocks */
+.real-trades-panel{margin-bottom:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;overflow:hidden}
+.real-trades-table{margin-bottom:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;overflow:hidden}
+.rt-header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid rgba(255,255,255,0.04);flex-wrap:wrap;gap:10px}
+.rt-title{font-size:13px;font-weight:700;color:#e2e8f0;letter-spacing:0.02em}
+.rt-title-sub{font-size:10px;color:#64748b;font-weight:500;margin-left:8px}
+.rt-source-toggle{display:flex;gap:4px}
+.rt-src{padding:5px 12px;font-size:11px;font-weight:600;border:1px solid rgba(255,255,255,0.08);border-radius:5px;background:rgba(255,255,255,0.02);color:#64748b;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.rt-src:hover{color:#94a3b8;background:rgba(255,255,255,0.05)}
+.rt-src.on{background:rgba(6,182,212,0.15);color:#06b6d4;border-color:rgba(6,182,212,0.3)}
+/* Mode toggle (independent of source toggle) */
+.rt-mode-divider{display:inline-block;width:1px;align-self:stretch;background:rgba(255,255,255,0.06);margin:0 4px}
+.rt-mode-btn{padding:5px 12px;font-size:11px;font-weight:600;border:1px solid rgba(255,255,255,0.08);border-radius:5px;background:rgba(255,255,255,0.02);color:#64748b;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap}
+.rt-mode-btn:hover{color:#94a3b8;background:rgba(255,255,255,0.05)}
+.rt-mode-btn.on{background:rgba(167,139,250,0.15);color:#a78bfa;border-color:rgba(167,139,250,0.3)}
+/* No-trade rows — visually muted */
+.rt-table tr.nt td{opacity:0.55;background:transparent !important}
+.rt-table tr.nt:hover td{opacity:0.85;background:rgba(255,255,255,0.015) !important}
+.rt-nt-status{display:inline-block;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;font-family:'DM Sans',sans-serif;background:rgba(100,116,139,0.12);color:#94a3b8;border:1px solid rgba(100,116,139,0.2)}
+.rt-nt-status.blocked{background:rgba(239,68,68,0.10);color:#ef4444;border-color:rgba(239,68,68,0.2)}
+.rt-nt-status.pending{background:rgba(245,158,11,0.10);color:#f59e0b;border-color:rgba(245,158,11,0.2)}
+.rt-nt-status.detected{background:rgba(6,182,212,0.10);color:#06b6d4;border-color:rgba(6,182,212,0.2)}
+.rt-nt-dim{color:#475569}
+.rt-strip{display:grid;grid-template-columns:repeat(5,1fr);background:transparent;border-bottom:1px solid rgba(255,255,255,0.04)}
+@media(max-width:900px){.rt-strip{grid-template-columns:repeat(3,1fr)}.rt-metric:nth-child(3n){border-right:none !important}}
+@media(max-width:500px){.rt-strip{grid-template-columns:repeat(2,1fr)}.rt-metric:nth-child(2n){border-right:none !important}}
+.rt-metric{padding:18px 18px 16px;background:transparent;text-align:left;position:relative;transition:background 0.2s ease}
+.rt-metric:not(:last-child){border-right:1px solid rgba(255,255,255,0.04)}
+.rt-metric:hover{background:rgba(255,255,255,0.015)}
+.rt-l{font-size:10px;color:#475569;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;margin-bottom:8px;display:block}
+.rt-v{font-size:24px;font-weight:700;color:#e2e8f0;font-family:'JetBrains Mono',monospace;letter-spacing:-0.015em;line-height:1.1}
+.rt-v.green{color:#22c55e}
+.rt-v.red{color:#ef4444}
+.rt-table-wrap{max-height:520px;overflow-y:auto}
+.rt-table{width:100%;font-size:12px;border-collapse:collapse}
+.rt-table thead{position:sticky;top:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(6px);z-index:1}
+.rt-table th{text-align:left;color:#64748b;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.06);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:0.06em}
+.rt-table td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.03);font-family:'JetBrains Mono',monospace;color:#cbd5e1}
+.rt-table tr:hover td{background:rgba(255,255,255,0.02)}
+.rt-table .r{text-align:right}
+.rt-table .c{text-align:center}
+.rt-pnl-pos{color:#22c55e;font-weight:700}
+.rt-pnl-neg{color:#ef4444;font-weight:700}
+.rt-exit{font-size:11px;color:#94a3b8;text-transform:lowercase}
+.rt-exit.tgt{color:#22c55e}
+.rt-exit.sl{color:#ef4444}
+.rt-exit.he{color:#f59e0b}
+.rt-exit.man{color:#a78bfa}
+.rt-empty{padding:30px;text-align:center;color:#475569;font-size:12px}
+.rt-loading{padding:30px;text-align:center;color:#64748b;font-size:12px;font-style:italic}
+/* Real Trades — exit badges */
+.rt-exb{display:inline-block;padding:3px 9px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;font-family:'DM Sans',sans-serif}
+.rt-exb-tgt{background:rgba(34,197,94,0.14);color:#22c55e;border:1px solid rgba(34,197,94,0.25)}
+.rt-exb-sl{background:rgba(239,68,68,0.14);color:#ef4444;border:1px solid rgba(239,68,68,0.25)}
+.rt-exb-he{background:rgba(245,158,11,0.14);color:#f59e0b;border:1px solid rgba(245,158,11,0.25)}
+.rt-exb-man{background:rgba(167,139,250,0.14);color:#a78bfa;border:1px solid rgba(167,139,250,0.25)}
+/* Real Trades — row tint */
+.rt-table tr.win td{background:linear-gradient(90deg,rgba(34,197,94,0.04) 0%,transparent 100%)}
+.rt-table tr.loss td{background:linear-gradient(90deg,rgba(239,68,68,0.04) 0%,transparent 100%)}
+.rt-table tr.win:hover td{background:rgba(34,197,94,0.08)}
+.rt-table tr.loss:hover td{background:rgba(239,68,68,0.08)}
+.rt-table td{padding:8px 12px}
+.rt-date{color:#64748b;font-size:11px}
+/* Hide redundant old sections (data already in Real Trades panel) */
+#p-patterns .perf-banner{display:none}
+#perf-trade-log-card{display:none}
 
 /* Sortable table headers */
 th.sortable{cursor:pointer;user-select:none;transition:background 0.15s}
@@ -678,9 +793,19 @@ th.sortable.active .sort-icon{color:#06b6d4}
             <button class="load-more-btn" id="loadAllCandles" style="flex:1">Load All</button>
           </div>
         </div>
-        <div class="pivots-box">
-          <div class="section-title">📐 PIVOTS</div>
-          <div class="pivots-grid" id="v13PivotsGrid"></div>
+        <div class="right-stack">
+          <div class="pivots-box">
+            <div class="section-title">📐 PIVOTS</div>
+            <div class="pivots-grid" id="v13PivotsGrid"></div>
+          </div>
+          <div class="trade-levels-box">
+            <div class="section-title">🎯 TRADE LEVELS</div>
+            <div id="v13TradeLevels"><div class="tl-empty">No active trade</div></div>
+          </div>
+          <div class="verify-box">
+            <div class="section-title">🧮 PATTERN VERIFICATION</div>
+            <div id="v13Verification"><div class="vf-empty">No pattern fired yet</div></div>
+          </div>
         </div>
       </div>
       
@@ -713,6 +838,48 @@ th.sortable.active .sort-icon{color:#06b6d4}
       </div>
     </div>
     
+    <!-- REAL TRADES PANEL (sourced from positions table) -->
+    <div class="real-trades-panel">
+      <div class="rt-header">
+        <div>
+          <span class="rt-title">💰 Real Trades</span>
+          <span class="rt-title-sub">from broker fills · positions table</span>
+        </div>
+        <div class="rt-source-toggle">
+          <button class="rt-src on" data-src="live">Live</button>
+          <button class="rt-src" data-src="backtest">Backtest</button>
+          <button class="rt-src" data-src="all">All</button>
+          <span class="rt-mode-divider"></span>
+          <button class="rt-mode-btn" id="rt-toggle-nt" title="Show all session days, including days with no trade">+ No-Trade Days</button>
+        </div>
+      </div>
+      <div class="rt-strip">
+        <div class="rt-metric"><div class="rt-l">Trades</div><div class="rt-v" id="rt-total">—</div></div>
+        <div class="rt-metric"><div class="rt-l">Wins</div><div class="rt-v green" id="rt-wins">—</div></div>
+        <div class="rt-metric"><div class="rt-l">Losses</div><div class="rt-v red" id="rt-losses">—</div></div>
+        <div class="rt-metric"><div class="rt-l">Win %</div><div class="rt-v" id="rt-wr">—</div></div>
+        <div class="rt-metric"><div class="rt-l">Net ₹</div><div class="rt-v" id="rt-netinr">—</div></div>
+      </div>
+    </div>
+    <!-- Trade-by-trade table (separate block to avoid column-alignment artifacts) -->
+    <div class="real-trades-table">
+      <div class="rt-table-wrap">
+        <table class="rt-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Pattern</th>
+              <th>Dir</th>
+              <th>Exit</th>
+              <th class="r">Pts</th>
+              <th class="r">₹</th>
+            </tr>
+          </thead>
+          <tbody id="rt-tbody"><tr><td colspan="6" class="rt-loading">Loading trades from positions table...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- Summary Banner (10 metrics) -->
     <div class="perf-banner">
       <div class="perf-metric"><div class="perf-metric-label">TRADES</div><div class="perf-metric-value" id="perf-trades">0</div></div>
@@ -754,7 +921,7 @@ th.sortable.active .sort-icon{color:#06b6d4}
     </div>
     
     <!-- Trade Log -->
-    <div class="card">
+    <div class="card" id="perf-trade-log-card">
       <div class="card-hd">📋 Trade Log</div>
       <div class="card-bd">
         <div class="tw" style="max-height:none">
@@ -1145,6 +1312,7 @@ function initPerformanceTab() {
       perfPeriod = btn.getAttribute('data-period');
       perfLogDisplayed = 20;
       renderPerformanceTab(sessionMap);
+      if (typeof renderRealTrades === 'function') renderRealTrades();
     });
   });
   
@@ -1153,9 +1321,11 @@ function initPerformanceTab() {
   var nextBtn = document.getElementById('perf-next');
   if (prevBtn) prevBtn.addEventListener('click', function() {
     shiftPerfPeriod(-1);
+    if (typeof renderRealTrades === 'function') renderRealTrades();
   });
   if (nextBtn) nextBtn.addEventListener('click', function() {
     shiftPerfPeriod(1);
+    if (typeof renderRealTrades === 'function') renderRealTrades();
   });
   
   // Load more button
@@ -1598,6 +1768,339 @@ function renderPerfLog(logs) {
   }
 }
 
+// ─── Real Trades Panel (positions table — source of truth) ───
+var rtSource = 'live';
+var rtIncludeNT = false; // toggle: include no-trade days
+var rtData = [];
+
+function rtFmtINR(n) {
+  // Indian comma format, no decimals for integer values, sign as '+' or '-'
+  var sign = n >= 0 ? '+' : '-';
+  return sign + '₹' + Math.abs(Math.round(n)).toLocaleString('en-IN');
+}
+
+function rtExitBadge(t) {
+  if (t === 'target')    return '<span class="rt-exb rt-exb-tgt">Target ✓</span>';
+  if (t === 'sl')        return '<span class="rt-exb rt-exb-sl">SL ✗</span>';
+  if (t === 'hard_exit') return '<span class="rt-exb rt-exb-he">Hard Exit</span>';
+  if (t === 'manual')    return '<span class="rt-exb rt-exb-man">Manual</span>';
+  return '<span class="rt-exit">—</span>';
+}
+
+// Classify a no-trade session day. Returns { label, cls, pattern }
+function rtDescribeNoTrade(entry) {
+  if (!entry) return { label: 'NO SESSION', cls: '', pattern: '—' };
+  var st = entry.state;
+  var sigs = entry.signals || [];
+
+  // Was a NO_TRADE signal generated? (Bible filter blocked or rejected)
+  var blockedSig = null;
+  for (var i = 0; i < sigs.length; i++) {
+    var s = sigs[i];
+    if (s.status === 'no_trade' || (s.pattern && s.pattern.indexOf('NO_TRADE') !== -1)) {
+      blockedSig = s; break;
+    }
+  }
+  if (blockedSig) {
+    var pat = (blockedSig.pattern || '').replace('_NO_TRADE','');
+    return { label: 'BLOCKED', cls: 'blocked', pattern: pat || '?' };
+  }
+
+  if (!st) return { label: 'NO STATE', cls: '', pattern: '—' };
+
+  // Pattern detected but didn't reach trade (pending / evaluated)
+  var detected = (typeof detectPattern === 'function') ? detectPattern(st) : null;
+  if (detected && detected.length > 0) {
+    var first = detected[0];
+    var pendingMatch = first.match(/^(\w+)\s*\(.*?\)/);
+    if (pendingMatch) return { label: 'PENDING', cls: 'pending', pattern: pendingMatch[1] };
+    return { label: 'DETECTED', cls: 'detected', pattern: first };
+  }
+
+  // Just C1 type evaluated, nothing else
+  if (st.c1_type) {
+    return { label: 'NO SETUP', cls: '', pattern: st.c1_type === 'buyer' ? 'BUYER' : 'SELLER' };
+  }
+
+  return { label: 'NO C1', cls: '', pattern: '—' };
+}
+
+function rtFilteredData() {
+  // Filter by source AND period — single source of truth for what's displayed
+  var range = (typeof getPeriodRange === 'function') ? getPeriodRange() : null;
+  return rtData.filter(function(p) {
+    if (!p.sessions) return false;
+    if (rtSource !== 'all' && p.sessions.data_source !== rtSource) return false;
+    if (range) {
+      var dt = p.sessions.trade_date;
+      if (dt < range.start || dt > range.end) return false;
+    }
+    return true;
+  });
+}
+
+function renderRealTrades() {
+  var tbody = document.getElementById('rt-tbody');
+  if (!tbody) return;
+
+  var filtered = rtFilteredData();
+
+  // Sort by trade_date DESC (latest first)
+  filtered.sort(function(a, b) {
+    var da = (a.sessions && a.sessions.trade_date) || '';
+    var db = (b.sessions && b.sessions.trade_date) || '';
+    return db.localeCompare(da);
+  });
+
+  // Compute stats
+  var wins = 0, losses = 0, netPts = 0, netInr = 0;
+  filtered.forEach(function(p) {
+    var pts = +p.pnl_points || 0;
+    var inr = (p.pnl_actual != null) ? +p.pnl_actual : pts * 65;
+    if (pts > 0) wins++;
+    else if (pts < 0) losses++;
+    netPts += pts;
+    netInr += inr;
+  });
+  var total = filtered.length;
+  var wr = total > 0 ? Math.round((wins / total) * 100) : 0;
+  var avgInr = total > 0 ? netInr / total : 0;
+
+  // Update strip
+  var $ = function(id){ return document.getElementById(id); };
+  $('rt-total').textContent = total;
+  $('rt-wins').textContent = wins;
+  $('rt-losses').textContent = losses;
+  $('rt-wr').textContent = total > 0 ? wr + '%' : '—';
+  if (total > 0) {
+    $('rt-netinr').textContent = rtFmtINR(netInr);
+    $('rt-netinr').className = 'rt-v ' + (netInr >= 0 ? 'green' : 'red');
+  } else {
+    $('rt-netinr').textContent = '—'; $('rt-netinr').className = 'rt-v';
+  }
+
+  // Render rows
+  if (total === 0 && !rtIncludeNT) {
+    tbody.innerHTML = '<tr><td colspan="6" class="rt-empty">No closed trades for this source &amp; period</td></tr>';
+    return;
+  }
+
+  // Build trade row objects
+  var rowObjs = filtered.map(function(p) {
+    return {
+      isNT: false,
+      date: (p.sessions && p.sessions.trade_date) || '—',
+      pattern: (p.signals && p.signals.pattern) || '?',
+      direction: p.direction || '—',
+      exit_type: p.exit_type || '—',
+      pts: +p.pnl_points || 0,
+      inr: (p.pnl_actual != null) ? +p.pnl_actual : (+p.pnl_points || 0) * 65
+    };
+  });
+
+  // If toggle on, append no-trade session days (within period) that aren't in the trade set
+  if (rtIncludeNT && typeof sessionMap !== 'undefined' && sessionMap) {
+    var range = (typeof getPeriodRange === 'function') ? getPeriodRange() : null;
+    var tradeDates = {};
+    rowObjs.forEach(function(r) { tradeDates[r.date] = true; });
+
+    for (var dt in sessionMap) {
+      if (range && (dt < range.start || dt > range.end)) continue;
+      if (tradeDates[dt]) continue; // already a trade row
+      var entry = sessionMap[dt];
+      var nt = rtDescribeNoTrade(entry);
+      rowObjs.push({
+        isNT: true,
+        date: dt,
+        pattern: nt.pattern,
+        direction: '—',
+        nt_label: nt.label,
+        nt_cls: nt.cls,
+        pts: null,
+        inr: null
+      });
+    }
+    // Re-sort merged set by date desc
+    rowObjs.sort(function(a, b) { return b.date.localeCompare(a.date); });
+  }
+
+  if (rowObjs.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="rt-empty">No session activity for this period</td></tr>';
+    return;
+  }
+
+  var html = '';
+  rowObjs.forEach(function(r) {
+    if (r.isNT) {
+      // No-trade row
+      var pColor = (r.pattern && typeof PC === 'function') ? PC(r.pattern) : '#475569';
+      var patHtml = r.pattern && r.pattern !== '—'
+        ? '<span style="color:'+pColor+';font-weight:700">'+r.pattern+'</span>'
+        : '<span class="rt-nt-dim">—</span>';
+      html += '<tr class="nt">';
+      html += '<td><span class="rt-date">' + r.date + '</span></td>';
+      html += '<td>' + patHtml + '</td>';
+      html += '<td><span class="rt-nt-dim">—</span></td>';
+      html += '<td><span class="rt-nt-status ' + (r.nt_cls || '') + '">' + r.nt_label + '</span></td>';
+      html += '<td class="r"><span class="rt-nt-dim">—</span></td>';
+      html += '<td class="r"><span class="rt-nt-dim">—</span></td>';
+      html += '</tr>';
+    } else {
+      // Trade row (unchanged)
+      var dirBadge = r.direction !== '—' ? B(r.direction, r.direction === 'LONG' ? 'bbu' : 'bse') : '—';
+      var rowCls = r.pts > 0 ? 'win' : r.pts < 0 ? 'loss' : '';
+      var pnlClass = r.pts > 0 ? 'rt-pnl-pos' : r.pts < 0 ? 'rt-pnl-neg' : '';
+      var ptsStr = (r.pts >= 0 ? '+' : '') + r.pts.toFixed(1);
+      var pColor = (typeof PC === 'function') ? PC(r.pattern) : '#94a3b8';
+
+      html += '<tr class="' + rowCls + '">';
+      html += '<td><span class="rt-date">' + r.date + '</span></td>';
+      html += '<td><span style="color:' + pColor + ';font-weight:700">' + r.pattern + '</span></td>';
+      html += '<td>' + dirBadge + '</td>';
+      html += '<td>' + rtExitBadge(r.exit_type) + '</td>';
+      html += '<td class="r ' + pnlClass + '">' + ptsStr + '</td>';
+      html += '<td class="r ' + pnlClass + '">' + rtFmtINR(r.inr) + '</td>';
+      html += '</tr>';
+    }
+  });
+  tbody.innerHTML = html;
+
+  // After rendering Real Trades, also patch the Per-Pattern Performance table
+  // with real position data (replacing the broken candle-replay aggregation)
+  patchPerPatternFromPositions(filtered);
+}
+
+// Patch Per-Pattern Performance table using real position data.
+// Preserves DETECTED + TRIGGERED counts (which work via sessionMap),
+// overrides TARGET / SL / H.EXIT / WIN% / PROFIT / LOSS / NET (which were broken).
+function patchPerPatternFromPositions(filteredPositions) {
+  var tbody = document.getElementById('perf-pattern-tbody');
+  if (!tbody) return;
+
+  // Aggregate positions by pattern
+  var agg = {};
+  filteredPositions.forEach(function(p) {
+    var pat = (p.signals && p.signals.pattern) ? p.signals.pattern.replace('_NO_TRADE','') : '?';
+    if (!agg[pat]) agg[pat] = { target:0, sl:0, he:0, profit:0, loss:0 };
+    var pts = +p.pnl_points || 0;
+    if (p.exit_type === 'target') { agg[pat].target++; agg[pat].profit += pts; }
+    else if (p.exit_type === 'sl') { agg[pat].sl++; agg[pat].loss += Math.abs(pts); }
+    else if (p.exit_type === 'manual') {
+      agg[pat].he++; // group manual under H.Exit visually
+      if (pts >= 0) agg[pat].profit += pts; else agg[pat].loss += Math.abs(pts);
+    }
+    else { // hard_exit or other
+      agg[pat].he++;
+      if (pts >= 0) agg[pat].profit += pts; else agg[pat].loss += Math.abs(pts);
+    }
+  });
+
+  // Walk existing rows and patch the cells
+  var rows = tbody.querySelectorAll('tr');
+  rows.forEach(function(tr) {
+    var nameSpan = tr.querySelector('td:first-child .m');
+    if (!nameSpan) return;
+    var pat = nameSpan.textContent.trim();
+    var a = agg[pat];
+    var cells = tr.querySelectorAll('td');
+    if (cells.length < 10) return;
+
+    // Indices: 0=pattern, 1=detected, 2=triggered, 3=target, 4=sl, 5=he, 6=win%, 7=profit, 8=loss, 9=net
+    if (a) {
+      var totalTrades = a.target + a.sl + a.he;
+      var winCount = a.target + (a.he > 0 ? 0 : 0); // strict: only target counts as win for win%
+      // Actually: count any positive pnl as a win
+      var winsForPct = 0;
+      filteredPositions.forEach(function(p) {
+        var pp = (p.signals && p.signals.pattern) ? p.signals.pattern.replace('_NO_TRADE','') : '?';
+        if (pp === pat && (+p.pnl_points || 0) > 0) winsForPct++;
+      });
+      var winPct = totalTrades > 0 ? Math.round((winsForPct / totalTrades) * 100) : 0;
+      var net = a.profit - a.loss;
+
+      cells[3].innerHTML = '<span class="m" style="color:'+(a.target>0?'#22c55e':'#475569')+'">'+a.target+'</span>';
+      cells[4].innerHTML = '<span class="m" style="color:'+(a.sl>0?'#ef4444':'#475569')+'">'+a.sl+'</span>';
+      cells[5].innerHTML = '<span class="m" style="color:'+(a.he>0?'#f59e0b':'#475569')+'">'+a.he+'</span>';
+      cells[6].innerHTML = '<span class="m" style="color:'+(winPct>=50?'#22c55e':winPct>0?'#f59e0b':'#475569')+';font-weight:700">'+(totalTrades>0?winPct+'%':'—')+'</span>';
+      cells[7].innerHTML = a.profit > 0 ? '<span class="m" style="color:#22c55e;font-weight:700">+'+a.profit.toFixed(1)+'</span>' : '<span class="m" style="color:#475569">—</span>';
+      cells[8].innerHTML = a.loss  > 0 ? '<span class="m" style="color:#ef4444;font-weight:700">-'+a.loss.toFixed(1)+'</span>'  : '<span class="m" style="color:#475569">—</span>';
+      cells[9].innerHTML = '<span class="m" style="color:'+(net>0?'#22c55e':net<0?'#ef4444':'#475569')+';font-weight:800">'+(net>0?'+':'')+net.toFixed(1)+'</span>';
+    }
+  });
+}
+
+async function loadRealTrades() {
+  var tbody = document.getElementById('rt-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="6" class="rt-loading">Loading trades from positions table...</td></tr>';
+  try {
+    // Step 1: fetch all closed positions
+    var positions = await Q("positions", "status=eq.closed&order=created_at.desc&limit=500");
+    if (!positions || positions.length === 0) {
+      rtData = []; renderRealTrades(); return;
+    }
+
+    // Step 2: collect unique session_ids and signal_ids
+    var sIdSet = {}, gIdSet = {};
+    positions.forEach(function(p) {
+      if (p.session_id) sIdSet[p.session_id] = true;
+      if (p.signal_id) gIdSet[p.signal_id] = true;
+    });
+    var sIds = Object.keys(sIdSet);
+    var gIds = Object.keys(gIdSet);
+
+    // Step 3: parallel fetch sessions + signals (avoids embedded-join ambiguity)
+    var sessionsP = sIds.length > 0
+      ? Q("sessions", "id=in.(" + sIds.join(",") + ")&select=id,trade_date,data_source")
+      : Promise.resolve([]);
+    var signalsP = gIds.length > 0
+      ? Q("signals", "id=in.(" + gIds.join(",") + ")&select=id,pattern")
+      : Promise.resolve([]);
+
+    var arr = await Promise.all([sessionsP, signalsP]);
+    var sessionsArr = arr[0] || [];
+    var signalsArr = arr[1] || [];
+
+    // Step 4: build lookup maps
+    var sMap = {}, gMap = {};
+    sessionsArr.forEach(function(s) { sMap[s.id] = s; });
+    signalsArr.forEach(function(g) { gMap[g.id] = g; });
+
+    // Step 5: attach to each position (mimicking embedded shape so renderer is unchanged)
+    positions.forEach(function(p) {
+      p.sessions = sMap[p.session_id] || null;
+      p.signals = gMap[p.signal_id] || null;
+    });
+
+    rtData = positions;
+    renderRealTrades();
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="6" class="rt-empty">Error: ' + (e.message || 'failed to load') + '</td></tr>';
+  }
+}
+
+// Wire source toggle + initial load
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.rt-src').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.rt-src').forEach(function(b){ b.classList.remove('on'); });
+      btn.classList.add('on');
+      rtSource = btn.getAttribute('data-src');
+      renderRealTrades();
+    });
+  });
+  var ntBtn = document.getElementById('rt-toggle-nt');
+  if (ntBtn) {
+    ntBtn.addEventListener('click', function() {
+      rtIncludeNT = !rtIncludeNT;
+      ntBtn.classList.toggle('on', rtIncludeNT);
+      ntBtn.textContent = rtIncludeNT ? '✓ With No-Trade' : '+ No-Trade Days';
+      renderRealTrades();
+    });
+  }
+  setTimeout(loadRealTrades, 250);
+});
+
 // Initialize performance tab when DOM ready
 document.addEventListener('DOMContentLoaded', function() {
   setTimeout(initPerformanceTab, 100);
@@ -1969,7 +2472,7 @@ async function selectCalDate(dt) {
     var cprLabel = (st.c1_close_vs_cpr || "").replace(/_/g, " ");
 
     dsHtml += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">';
-    [{l:"C1 Type",v:c1Badge},{l:"CPR",v:cprLabel},{l:"Day High",v:F(st.day_high)},{l:"Day Low",v:F(st.day_low)},{l:"Candles",v:(st.candles_processed||0)+"/180"},{l:"Status",v:B(entry.session.status||"—",entry.session.status==="completed"?"bs":"bd")}].forEach(function(i){
+    [{l:"C1 Type",v:c1Badge},{l:"Day High",v:F(st.day_high)},{l:"Day Low",v:F(st.day_low)},{l:"Status",v:B(entry.session.status||"—",entry.session.status==="completed"?"bs":"bd")}].forEach(function(i){
       dsHtml += '<div style="padding:6px 8px;background:rgba(0,0,0,0.15);border-radius:4px"><div style="font-size:9px;color:#475569;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:2px">'+i.l+'</div><div style="font-size:12px;font-weight:600;color:#e2e8f0">'+i.v+'</div></div>';
     });
     dsHtml += '</div>';
@@ -2457,8 +2960,6 @@ function renderStrip(st) {
   if (!st) { el.innerHTML = ""; return; }
   var items = [
     {l:"C1 Type", v:B(String(st.c1_type||"").toUpperCase(), st.c1_type==="buyer"?"bbu":"bse")},
-    {l:"CPR Location", v:String(st.c1_close_vs_cpr||"—").replace(/_/g," ")},
-    {l:"Candles", v:(st.candles_processed||0)+"/180"},
     {l:"Day High", v:F(st.day_high)},
     {l:"Day Low", v:F(st.day_low)},
     {l:"Active", v:st.active_pattern||st.seller_pattern_fired||st.buyer_pattern_fired||"None"},
@@ -3433,10 +3934,14 @@ var autoExecuteInProgress = false;
 async function checkSignalsAndPositions(sessionId, state) {
   if (!sessionId) return;
   try {
-    // Check pending signals
-    var signals = await Q("signals", "select=*&session_id=eq." + sessionId + "&status=eq.pending&limit=1");
-    if (signals.length > 0 && !state.trade_taken) {
-      var signal = signals[0];
+    // Fetch latest signal of ANY status (pending OR executed) — needed so
+    // the verification + trade levels panels know the pattern after execution.
+    var signals = await Q("signals", "select=*&session_id=eq." + sessionId + "&order=created_at.desc&limit=1");
+    var latestSig = signals[0] || null;
+    var pendingSig = (latestSig && latestSig.status === 'pending') ? latestSig : null;
+
+    if (pendingSig && !state.trade_taken) {
+      var signal = pendingSig;
       
       // Check if auto_execute is ON and Kite is logged in
       if (currentSettings && currentSettings.auto_execute && accessToken && !autoExecuteInProgress) {
@@ -3462,29 +3967,38 @@ async function checkSignalsAndPositions(sessionId, state) {
       hideSignalCard();
     }
 
-    // Check open positions
-    var positions = await Q("positions", "select=*&session_id=eq." + sessionId + "&status=eq.open&limit=1");
-    if (positions.length > 0) {
-      showPositionCard(positions[0]);
-      // Set entry marker from position's signal
-      v13SetTradeMarkers(positions[0].entry_candle || null, null, null);
+    // Check positions: fetch latest (open OR closed) for today's session
+    var positions = await Q("positions", "select=*&session_id=eq." + sessionId + "&order=updated_at.desc&limit=1");
+    var latestPos = positions.length > 0 ? positions[0] : null;
+
+    if (latestPos && latestPos.status === 'open') {
+      showPositionCard(latestPos);
+      v13SetTradeMarkers(latestPos.entry_candle || null, null, null);
+    } else if (latestPos && latestPos.status === 'closed') {
+      // Show closed result card (Bug #48 fix) — don't revert to "Waiting"
+      showPositionCard(latestPos);
+      var exitType = latestPos.exit_type === 'target' ? 'target'
+                   : latestPos.exit_type === 'sl' ? 'sl'
+                   : latestPos.exit_type === 'manual' ? 'manual' : 'hard_exit';
+      v13SetTradeMarkers(latestPos.entry_candle || null, latestPos.exit_candle || null, exitType);
     } else {
       hidePositionCard();
-      // Check for closed positions to show exit marker
-      var closedPos = await Q("positions", "select=*&session_id=eq." + sessionId + "&status=neq.open&order=updated_at.desc&limit=1");
-      if (closedPos.length > 0) {
-        var p = closedPos[0];
-        var exitType = p.exit_reason === 'target_hit' ? 'target' : p.exit_reason === 'sl_hit' ? 'sl' : 'hard_exit';
-        v13SetTradeMarkers(p.entry_candle || null, p.exit_candle || null, exitType);
+      // No position at all — check executed signals just for entry marker
+      var execSigs = await Q("signals", "select=*&session_id=eq." + sessionId + "&status=eq.executed&limit=1");
+      if (execSigs.length > 0) {
+        v13SetTradeMarkers(execSigs[0].trigger_candle, null, null);
       } else {
-        // Check executed signals for entry marker even without position
-        var execSigs = await Q("signals", "select=*&session_id=eq." + sessionId + "&status=eq.executed&limit=1");
-        if (execSigs.length > 0) {
-          v13SetTradeMarkers(execSigs[0].trigger_candle, null, null);
-        } else {
-          v13ClearTradeMarkers();
-        }
+        v13ClearTradeMarkers();
       }
+    }
+
+    // Update the Trade Levels panel below pivots
+    if (typeof v13UpdateTradeLevels === 'function') {
+      v13UpdateTradeLevels(state, latestSig, latestPos);
+    }
+    // Update the Pattern Verification panel
+    if (typeof v13UpdateVerification === 'function') {
+      v13UpdateVerification(state, latestSig, latestPos, v13CurrentPivots);
     }
   } catch (err) {
     console.error("Check signals/positions error:", err);
@@ -3827,6 +4341,403 @@ function v13UpdatePivots(pv) {
     '</div>';
 }
 
+var v13LastTLRender = { signature: null };
+
+function v13UpdateTradeLevels(state, signal, position) {
+  var el = document.getElementById('v13TradeLevels');
+  if (!el) return;
+
+  // Build a render signature — skip re-render if nothing changed
+  var sig_id = signal ? signal.id : null;
+  var pos_id = position ? position.id : null;
+  var pos_status = position ? position.status : null;
+  // For open positions, include current price so live P&L still updates
+  var priceTick = (position && position.status === 'open') ? currentNiftyPrice : null;
+  var signature = pos_id + ':' + pos_status + ':' + sig_id + ':' + priceTick;
+  if (signature === v13LastTLRender.signature) return;
+  v13LastTLRender.signature = signature;
+
+  // Decide what to render based on what's happening
+  var pos = position;
+  var sig = signal;
+  var st = state;
+
+  // Determine which "thing" drives the panel
+  var mode = 'empty'; // empty | detected | pending | open | closed
+  var data = {};
+
+  if (pos && pos.status === 'closed') {
+    mode = 'closed';
+    data.pattern = pos.pattern || (sig && sig.pattern) || '?';
+    data.direction = pos.direction;
+    data.signalEntry = sig ? sig.entry_level : null;
+    data.entry = pos.entry_price_actual || pos.entry_price_nifty;
+    data.target = pos.target_level;
+    data.sl = pos.sl_level;
+    data.exit = pos.exit_price_nifty;
+    data.exitType = pos.exit_type;
+    data.pnlPts = +pos.pnl_points || 0;
+    data.pnlInr = (pos.pnl_actual != null) ? +pos.pnl_actual : data.pnlPts * (pos.entry_quantity || 65);
+    data.triggerCandle = sig ? sig.trigger_candle : null;
+    data.exitCandle = pos.exit_candle;
+  } else if (pos && pos.status === 'open') {
+    mode = 'open';
+    data.pattern = pos.pattern || (sig && sig.pattern) || '?';
+    data.direction = pos.direction;
+    data.signalEntry = sig ? sig.entry_level : null;
+    data.entry = pos.entry_price_actual || pos.entry_price_nifty;
+    data.target = pos.target_level;
+    data.sl = pos.sl_level;
+    var qty = pos.entry_quantity || 65;
+    var cur = currentNiftyPrice || data.entry;
+    data.pnlPts = data.direction === 'LONG' ? cur - data.entry : data.entry - cur;
+    data.pnlInr = data.pnlPts * qty;
+    data.triggerCandle = sig ? sig.trigger_candle : null;
+  } else if (sig) {
+    mode = 'pending';
+    data.pattern = sig.pattern;
+    data.direction = sig.direction;
+    data.entry = sig.entry_level;
+    data.target = sig.target_level;
+    data.sl = sig.sl_level;
+    data.triggerCandle = sig.trigger_candle;
+  } else if (st && (st.active_pattern || st.seller_pattern_fired || st.buyer_pattern_fired)) {
+    mode = 'detected';
+    data.pattern = st.active_pattern || st.seller_pattern_fired || st.buyer_pattern_fired;
+    data.c1Type = st.c1_type;
+  }
+
+  if (mode === 'empty') {
+    el.innerHTML = '<div class="tl-empty">No active trade — waiting for pattern</div>';
+    return;
+  }
+
+  var patColor = (typeof PC === 'function') ? PC((data.pattern || '').replace('_NO_TRADE','')) : '#94a3b8';
+  var dirHtml = data.direction
+    ? '<span style="color:' + (data.direction === 'LONG' ? '#4ade80' : '#f87171') + ';font-weight:700;font-size:11px;margin-left:6px">' + data.direction + '</span>'
+    : '';
+
+  var statusHtml = '';
+  if (mode === 'closed') {
+    var cls = data.exitType === 'target' ? 'target' : data.exitType === 'sl' ? 'sl' : data.exitType === 'manual' ? 'man' : 'he';
+    var lbl = data.exitType === 'target' ? 'Target Hit'
+           : data.exitType === 'sl' ? 'SL Hit'
+           : data.exitType === 'manual' ? 'Manual'
+           : 'Hard Exit';
+    statusHtml = '<span class="tl-status ' + cls + '">' + lbl + '</span>';
+  } else if (mode === 'open') {
+    statusHtml = '<span class="tl-status open">Live</span>';
+  } else if (mode === 'pending') {
+    statusHtml = '<span class="tl-status pending">Pending</span>';
+  } else if (mode === 'detected') {
+    statusHtml = '<span class="tl-status detected">Monitoring</span>';
+  }
+
+  var html = '';
+  html += '<div class="tl-header">';
+  html += '<div><span class="tl-pat" style="color:' + patColor + '">' + (data.pattern || '?') + '</span>' + dirHtml + '</div>';
+  html += statusHtml;
+  html += '</div>';
+
+  if (mode === 'detected') {
+    html += '<div class="tl-row"><span class="tl-l">C1 Type</span><span class="tl-v">' + (data.c1Type || '—').toUpperCase() + '</span></div>';
+    html += '<div class="tl-row"><span class="tl-l">Status</span><span class="tl-v dim">Awaiting trigger</span></div>';
+  } else {
+    if (data.triggerCandle != null) {
+      html += '<div class="tl-row"><span class="tl-l">Trigger</span><span class="tl-v dim">C' + data.triggerCandle + '</span></div>';
+    }
+    // Entry (with optional fill differentiation for open/closed)
+    if (mode === 'closed' || mode === 'open') {
+      var entryStr = F(data.entry);
+      if (data.signalEntry != null && Math.abs(+data.signalEntry - data.entry) > 0.05) {
+        entryStr += ' <span style="color:#475569;font-size:10px">(sig ' + F(data.signalEntry) + ')</span>';
+      }
+      html += '<div class="tl-row"><span class="tl-l">Entry (fill)</span><span class="tl-v">' + entryStr + '</span></div>';
+    } else {
+      html += '<div class="tl-row"><span class="tl-l">Entry</span><span class="tl-v">' + F(data.entry) + '</span></div>';
+    }
+    // Target
+    var tgtMarker = (mode === 'closed' && data.exitType === 'target') ? ' <span style="color:#22c55e">✓</span>' : '';
+    html += '<div class="tl-row"><span class="tl-l">Target</span><span class="tl-v green">' + F(data.target) + tgtMarker + '</span></div>';
+    // SL
+    var slMarker = (mode === 'closed' && data.exitType === 'sl') ? ' <span style="color:#ef4444">✗</span>' : '';
+    html += '<div class="tl-row"><span class="tl-l">SL</span><span class="tl-v red">' + F(data.sl) + slMarker + '</span></div>';
+
+    if (mode === 'closed') {
+      html += '<div class="tl-row"><span class="tl-l">Exit</span><span class="tl-v">' + F(data.exit) + (data.exitCandle != null ? ' <span style="color:#475569;font-size:10px">@ C' + data.exitCandle + '</span>' : '') + '</span></div>';
+    }
+
+    if (mode === 'open' || mode === 'closed') {
+      var pnlClass = data.pnlPts >= 0 ? 'profit' : 'loss';
+      var pnlPtsCls = data.pnlPts >= 0 ? 'green' : 'red';
+      var ptsStr = (data.pnlPts >= 0 ? '+' : '') + data.pnlPts.toFixed(1) + ' pts';
+      var inrStr = (data.pnlInr >= 0 ? '+' : '-') + '₹' + Math.abs(Math.round(data.pnlInr)).toLocaleString('en-IN');
+      html += '<div class="tl-pnl-row ' + pnlClass + '">';
+      html += '<span class="tl-l">P&amp;L</span>';
+      html += '<span class="tl-v ' + pnlPtsCls + '" style="font-size:13px">' + ptsStr + ' &middot; ' + inrStr + '</span>';
+      html += '</div>';
+    }
+  }
+
+  el.innerHTML = html;
+}
+
+// ─── Pattern Verification Engine ─────────────────────────────
+// Re-evaluates each pattern's rules against session state, so Vipin can
+// audit that the engine's fire decision matches the documented logic.
+//
+// Each rule: { d: description, e: function(state, sig, pos, pivots) -> {ok, actual} }
+// ok: true=PASS, false=FAIL, null=UNKNOWN (data missing)
+
+function vfNum(n) { return n != null ? (+n).toFixed(2) : '?'; }
+
+var PATTERN_RULES = {
+  // ── BUYER PATTERNS ──
+  BC1: [
+    { d: 'C1 is buyer (close > open)', e: function(s) {
+      if (s.c1_close == null || s.c1_open == null) return { ok:null, actual:'C1 OHLC missing' };
+      return { ok: s.c1_type === 'buyer' && s.c1_close > s.c1_open, actual: 'close ' + vfNum(s.c1_close) + ' vs open ' + vfNum(s.c1_open) };
+    }},
+    { d: 'Any part of C1 inside CPR', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      var inside = (s.c1_high <= pv.cpr_top && s.c1_high >= pv.cpr_bottom) ||
+                   (s.c1_low  <= pv.cpr_top && s.c1_low  >= pv.cpr_bottom) ||
+                   (s.c1_high >  pv.cpr_top && s.c1_low  <  pv.cpr_bottom);
+      return { ok: inside, actual: 'C1 ['+vfNum(s.c1_low)+'–'+vfNum(s.c1_high)+'] vs CPR ['+vfNum(pv.cpr_bottom)+'–'+vfNum(pv.cpr_top)+']' };
+    }},
+    { d: 'C1 close > PP', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      return { ok: s.c1_close > pv.pp, actual: vfNum(s.c1_close)+' > PP '+vfNum(pv.pp) };
+    }},
+    { d: 'C1 close < CPR Top', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      return { ok: s.c1_close < pv.cpr_top, actual: vfNum(s.c1_close)+' < CPR Top '+vfNum(pv.cpr_top) };
+    }},
+    { d: 'Trigger candle in C9–C20 window', e: function(s, sig) {
+      var c = sig ? sig.trigger_candle : null;
+      if (c == null) return { ok:null, actual:'no trigger candle' };
+      return { ok: c >= 9 && c <= 20, actual: 'fired @ C'+c+' (window C9–C20)' };
+    }},
+    { d: 'Entry close ≤ CPR Top + 5', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      var e = sig ? sig.entry_level : null;
+      if (e == null) return { ok:null, actual:'entry missing' };
+      return { ok: +e <= pv.cpr_top + 5, actual: vfNum(e)+' ≤ '+vfNum(pv.cpr_top + 5)+' (CPR Top + 5)' };
+    }},
+  ],
+  BC2: [
+    { d: 'C1 is buyer', e: function(s) {
+      return { ok: s.c1_type === 'buyer' && s.c1_close > s.c1_open, actual: 'close '+vfNum(s.c1_close)+' vs open '+vfNum(s.c1_open) };
+    }},
+    { d: 'Any part of C1 inside CPR', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      var inside = (s.c1_high <= pv.cpr_top && s.c1_high >= pv.cpr_bottom) ||
+                   (s.c1_low  <= pv.cpr_top && s.c1_low  >= pv.cpr_bottom) ||
+                   (s.c1_high >  pv.cpr_top && s.c1_low  <  pv.cpr_bottom);
+      return { ok: inside, actual: 'C1 ['+vfNum(s.c1_low)+'–'+vfNum(s.c1_high)+'] vs CPR ['+vfNum(pv.cpr_bottom)+'–'+vfNum(pv.cpr_top)+']' };
+    }},
+    { d: 'C1 close > CPR Top', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      return { ok: s.c1_close > pv.cpr_top, actual: vfNum(s.c1_close)+' > CPR Top '+vfNum(pv.cpr_top) };
+    }},
+    { d: 'Triggers at C2 (first eligible candle after C1)', e: function(s, sig) {
+      var c = sig ? sig.trigger_candle : null;
+      return { ok: c === 2, actual: 'trigger @ C'+(c||'?')+' (expected C2)' };
+    }},
+  ],
+  BA1: [
+    { d: 'C1 is buyer', e: function(s) { return { ok: s.c1_type === 'buyer', actual: 'C1 type: '+(s.c1_type||'?') }; }},
+    { d: 'C1 completely outside CPR', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      var outside = (s.c1_low > pv.cpr_top) || (s.c1_high < pv.cpr_bottom);
+      return { ok: outside, actual: 'C1 ['+vfNum(s.c1_low)+'–'+vfNum(s.c1_high)+'] vs CPR ['+vfNum(pv.cpr_bottom)+'–'+vfNum(pv.cpr_top)+']' };
+    }},
+    { d: 'Pivot touched and rejected', e: function(s) {
+      return { ok: !!s.ba1_confirmed || s.ba1_pivot_touched != null, actual: 'pivot touched: '+(s.ba1_pivot_touched||'—') };
+    }},
+    { d: 'Direction: SHORT', e: function(s, sig) { return { ok: !sig || sig.direction === 'SHORT', actual: 'dir: '+(sig?sig.direction:'?') }; }},
+  ],
+  BB1: [
+    { d: 'C1 is buyer', e: function(s) { return { ok: s.c1_type === 'buyer', actual: 'C1 type: '+(s.c1_type||'?') }; }},
+    { d: 'C1 completely outside CPR', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      var outside = (s.c1_low > pv.cpr_top) || (s.c1_high < pv.cpr_bottom);
+      return { ok: outside, actual: 'C1 ['+vfNum(s.c1_low)+'–'+vfNum(s.c1_high)+'] vs CPR ['+vfNum(pv.cpr_bottom)+'–'+vfNum(pv.cpr_top)+']' };
+    }},
+    { d: 'Reference high tracked, broken down', e: function(s) {
+      return { ok: !!s.bb1_confirmed, actual: 'running_low: '+vfNum(s.bb1_running_low) };
+    }},
+    { d: 'Trigger ≤ C40 (9:25 AM deadline)', e: function(s, sig) {
+      var c = sig ? sig.trigger_candle : null;
+      return { ok: c != null && c <= 40, actual: 'fired @ C'+(c||'?')+' (deadline C40)' };
+    }},
+    { d: 'Direction: SHORT', e: function(s, sig) { return { ok: !sig || sig.direction === 'SHORT', actual: 'dir: '+(sig?sig.direction:'?') }; }},
+  ],
+  // ── SELLER PATTERNS ──
+  SB1: [
+    { d: 'C1 is seller', e: function(s) { return { ok: s.c1_type === 'seller', actual: 'C1 type: '+(s.c1_type||'?') }; }},
+    { d: 'C1 outside CPR', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      var outside = (s.c1_low > pv.cpr_top) || (s.c1_high < pv.cpr_bottom);
+      return { ok: outside, actual: 'C1 ['+vfNum(s.c1_low)+'–'+vfNum(s.c1_high)+'] vs CPR ['+vfNum(pv.cpr_bottom)+'–'+vfNum(pv.cpr_top)+']' };
+    }},
+    { d: 'C1 high broken (close above C1 high)', e: function(s) {
+      return { ok: !!s.sb1_confirmed, actual: 'C1 high: '+vfNum(s.c1_high) };
+    }},
+    { d: 'Direction: LONG (reversal)', e: function(s, sig) { return { ok: !sig || sig.direction === 'LONG', actual: 'dir: '+(sig?sig.direction:'?') }; }},
+  ],
+  SB2: [
+    { d: 'C1 is seller', e: function(s) { return { ok: s.c1_type === 'seller', actual: 'C1 type: '+(s.c1_type||'?') }; }},
+    { d: 'C1 inside CPR (any part)', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      var inside = (s.c1_high <= pv.cpr_top && s.c1_high >= pv.cpr_bottom) ||
+                   (s.c1_low  <= pv.cpr_top && s.c1_low  >= pv.cpr_bottom) ||
+                   (s.c1_high >  pv.cpr_top && s.c1_low  <  pv.cpr_bottom);
+      return { ok: inside, actual: 'C1 ['+vfNum(s.c1_low)+'–'+vfNum(s.c1_high)+'] vs CPR ['+vfNum(pv.cpr_bottom)+'–'+vfNum(pv.cpr_top)+']' };
+    }},
+    { d: 'Reference candle high broken', e: function(s) {
+      return { ok: !!s.sb2_confirmed, actual: 'ref candle: C'+(s.sb2_reference_candle||'?') };
+    }},
+    { d: 'Direction: SHORT', e: function(s, sig) { return { ok: !sig || sig.direction === 'SHORT', actual: 'dir: '+(sig?sig.direction:'?') }; }},
+  ],
+  SA1: [
+    { d: 'C1 is seller', e: function(s) { return { ok: s.c1_type === 'seller', actual: 'C1 type: '+(s.c1_type||'?') }; }},
+    { d: 'C1 low broken downward', e: function(s) {
+      return { ok: s.sa1_low_break_candle != null, actual: 'low break @ C'+(s.sa1_low_break_candle||'?') };
+    }},
+    { d: 'Reversal confirmed (close back above)', e: function(s) {
+      return { ok: !!s.sa1_confirmed, actual: 'C1 low: '+vfNum(s.c1_low) };
+    }},
+    { d: 'Direction: LONG (reversal)', e: function(s, sig) { return { ok: !sig || sig.direction === 'LONG', actual: 'dir: '+(sig?sig.direction:'?') }; }},
+  ],
+  SC1: [
+    { d: 'C1 is seller', e: function(s) { return { ok: s.c1_type === 'seller', actual: 'C1 type: '+(s.c1_type||'?') }; }},
+    { d: 'Multi-pivot breakdown (≥1 pivot crossed)', e: function(s) {
+      return { ok: (s.sc1_pivots_crossed||0) >= 1, actual: (s.sc1_pivots_crossed||0)+' pivot(s) crossed' };
+    }},
+    { d: 'SC1 confirmed', e: function(s) { return { ok: !!s.sc1_confirmed, actual: s.sc1_confirmed ? 'confirmed' : 'pending' }; }},
+    { d: 'Direction: SHORT', e: function(s, sig) { return { ok: !sig || sig.direction === 'SHORT', actual: 'dir: '+(sig?sig.direction:'?') }; }},
+  ],
+  SD1: [
+    { d: 'C1 is seller', e: function(s) { return { ok: s.c1_type === 'seller', actual: 'C1 type: '+(s.c1_type||'?') }; }},
+    { d: 'C1 close above PDH', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      return { ok: s.c1_close > pv.pdh, actual: vfNum(s.c1_close)+' > PDH '+vfNum(pv.pdh) };
+    }},
+    { d: 'No earlier seller pattern fired', e: function(s) {
+      var fired = s.seller_pattern_fired;
+      return { ok: !fired || fired === 'SD1' || fired === 'SA1_NO_TRADE', actual: 'prior fire: '+(fired||'none') };
+    }},
+    { d: 'Direction: SHORT', e: function(s, sig) { return { ok: !sig || sig.direction === 'SHORT', actual: 'dir: '+(sig?sig.direction:'?') }; }},
+  ],
+  SD2: [
+    { d: 'C1 is seller', e: function(s) { return { ok: s.c1_type === 'seller', actual: 'C1 type: '+(s.c1_type||'?') }; }},
+    { d: 'C1 close: below PDH, above CPR', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      var ok = s.c1_close < pv.pdh && s.c1_close > pv.cpr_top;
+      return { ok: ok, actual: vfNum(s.c1_close)+' (CPR Top '+vfNum(pv.cpr_top)+', PDH '+vfNum(pv.pdh)+')' };
+    }},
+    { d: 'Direction: SHORT', e: function(s, sig) { return { ok: !sig || sig.direction === 'SHORT', actual: 'dir: '+(sig?sig.direction:'?') }; }},
+  ],
+  SD3: [
+    { d: 'C1 is seller', e: function(s) { return { ok: s.c1_type === 'seller', actual: 'C1 type: '+(s.c1_type||'?') }; }},
+    { d: 'C1 close inside CPR', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      var inside = s.c1_close >= pv.cpr_bottom && s.c1_close <= pv.cpr_top;
+      return { ok: inside, actual: vfNum(s.c1_close)+' in CPR ['+vfNum(pv.cpr_bottom)+'–'+vfNum(pv.cpr_top)+']' };
+    }},
+    { d: 'Direction: SHORT', e: function(s, sig) { return { ok: !sig || sig.direction === 'SHORT', actual: 'dir: '+(sig?sig.direction:'?') }; }},
+  ],
+  SD4: [
+    { d: 'C1 is seller', e: function(s) { return { ok: s.c1_type === 'seller', actual: 'C1 type: '+(s.c1_type||'?') }; }},
+    { d: 'C1 close: below CPR, above PDL', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      var ok = s.c1_close < pv.cpr_bottom && s.c1_close > pv.pdl;
+      return { ok: ok, actual: vfNum(s.c1_close)+' (PDL '+vfNum(pv.pdl)+', CPR Bot '+vfNum(pv.cpr_bottom)+')' };
+    }},
+    { d: 'Direction: SHORT', e: function(s, sig) { return { ok: !sig || sig.direction === 'SHORT', actual: 'dir: '+(sig?sig.direction:'?') }; }},
+  ],
+  SD5: [
+    { d: 'C1 is seller', e: function(s) { return { ok: s.c1_type === 'seller', actual: 'C1 type: '+(s.c1_type||'?') }; }},
+    { d: 'C1 close below PDL', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok:null, actual:'pivots missing' };
+      return { ok: s.c1_close < pv.pdl, actual: vfNum(s.c1_close)+' < PDL '+vfNum(pv.pdl) };
+    }},
+    { d: 'Fires only at C20 (deadline pattern)', e: function(s, sig) {
+      var c = sig ? sig.trigger_candle : null;
+      return { ok: c === 20, actual: 'fired @ C'+(c||'?')+' (must be C20)' };
+    }},
+    { d: 'Direction: SHORT', e: function(s, sig) { return { ok: !sig || sig.direction === 'SHORT', actual: 'dir: '+(sig?sig.direction:'?') }; }},
+  ],
+};
+
+// Strip _NO_TRADE suffix when looking up rules
+function vfPatternKey(p) { return (p || '').replace('_NO_TRADE', ''); }
+
+function v13UpdateVerification(state, signal, position, pivots) {
+  var el = document.getElementById('v13Verification');
+  if (!el) return;
+
+  // Determine which pattern to verify (closed > open > pending > detected)
+  var pat = null;
+  if (position && (position.status === 'closed' || position.status === 'open')) {
+    pat = (signal && signal.pattern) || position.pattern;
+  } else if (signal) {
+    pat = signal.pattern;
+  } else if (state) {
+    pat = state.active_pattern || state.seller_pattern_fired || state.buyer_pattern_fired;
+  }
+
+  if (!pat) {
+    el.innerHTML = '<div class="vf-empty">No pattern fired yet</div>';
+    return;
+  }
+
+  var key = vfPatternKey(pat);
+  var rules = PATTERN_RULES[key];
+
+  if (!rules) {
+    el.innerHTML = '<div class="vf-empty">Verification rules for <b>'+key+'</b> not yet defined</div>';
+    return;
+  }
+
+  // Evaluate each rule
+  var passed = 0, failed = 0, unknown = 0;
+  var rulesHtml = '';
+  rules.forEach(function(r) {
+    var res;
+    try { res = r.e(state || {}, signal, position, pivots); }
+    catch(e) { res = { ok: null, actual: 'eval error: '+e.message }; }
+    var cls, icon;
+    if (res.ok === true)  { cls='pass'; icon='✓'; passed++; }
+    else if (res.ok === false) { cls='fail'; icon='✗'; failed++; }
+    else                  { cls='unk'; icon='?'; unknown++; }
+    rulesHtml += '<div class="vf-rule '+cls+'">';
+    rulesHtml += '<span class="vf-icon">'+icon+'</span>';
+    rulesHtml += '<div><div class="vf-desc">'+r.d+'</div><div class="vf-actual">'+res.actual+'</div></div>';
+    rulesHtml += '</div>';
+  });
+
+  // Summary badge
+  var sumCls, sumLbl;
+  if (failed > 0) { sumCls = 'fail'; sumLbl = 'RULE VIOLATION'; }
+  else if (unknown > 0 && passed === 0) { sumCls = 'partial'; sumLbl = 'INCOMPLETE'; }
+  else if (unknown > 0) { sumCls = 'partial'; sumLbl = passed+'/'+rules.length+' VERIFIED'; }
+  else { sumCls = 'ok'; sumLbl = 'EXECUTION VALID'; }
+
+  var patColor = (typeof PC === 'function') ? PC(key) : '#94a3b8';
+  var html = '';
+  html += '<div class="vf-header">';
+  html += '<span class="vf-pat" style="color:'+patColor+'">'+key+'</span>';
+  html += '<span class="vf-summary '+sumCls+'">'+sumLbl+'</span>';
+  html += '</div>';
+  html += rulesHtml;
+  if (failed > 0) {
+    html += '<div class="vf-warn">⚠ Engine fired this pattern but '+failed+' rule(s) failed verification. Possible bug — investigate.</div>';
+  }
+  el.innerHTML = html;
+}
+
 function v13UpdateMonitoringLog(st, logs) {
   var stripEl = document.getElementById('v13MonitoringStrip');
   if (!stripEl) return;
@@ -3853,8 +4764,6 @@ function v13UpdateMonitoringLog(st, logs) {
   // Block 1: Monitoring strip (Change 7: Entry/Target/SL instead of Day High/Low)
   var items = [
     {l:"C1 type", v:B(String(st.c1_type||"").toUpperCase(), st.c1_type==="buyer"?"bbu":"bse")},
-    {l:"CPR location", v:String(st.c1_close_vs_cpr||"—").replace(/_/g," ")},
-    {l:"Candles", v:(st.candles_processed||0)+"/180"},
     {l:"Active", v:st.active_pattern||st.seller_pattern_fired||st.buyer_pattern_fired||"None"},
     {l:"Trade", v:B(st.trade_taken?"YES":"NO", st.trade_taken?"bs":"bd")},
     {l:"Entry", v:sigEntry},
@@ -4161,8 +5070,6 @@ function logUpdateMonitoring(st, session, sigs) {
 
   var items = [
     {l:"C1 type", v:B(String(st.c1_type||"").toUpperCase(), st.c1_type==="buyer"?"bbu":"bse")},
-    {l:"CPR location", v:String(st.c1_close_vs_cpr||"—").replace(/_/g," ")},
-    {l:"Candles", v:(st.candles_processed||0)+"/180"},
     {l:"Active", v:st.active_pattern||st.seller_pattern_fired||st.buyer_pattern_fired||"None"},
     {l:"Trade", v:B(st.trade_taken?"YES":"NO", st.trade_taken?"bs":"bd")},
     {l:"Entry", v:sigEntry},
@@ -4484,40 +5391,85 @@ function v13ShowSignalCard(signal) {
   v13AddTradingLines(signal.entry_level, signal.target_level, signal.sl_level);
 }
 
+var v13LastPosRender = { id: null, status: null };
+
 function v13ShowPositionCard(position) {
+  // ALWAYS set DOM visibility first (cheap, idempotent) — must happen on every
+  // call because hideSignalCard() / v13ShowWaiting() can reset it between polls.
   document.getElementById('v13ActionWaiting').style.display = 'none';
   document.getElementById('v13SignalCard').classList.remove('show');
   document.getElementById('v13PositionCard').classList.add('show');
-  
+
+  // Skip expensive data re-render for unchanged closed positions
+  // (data is frozen — re-rendering causes 5s flicker)
+  if (position.status === 'closed' &&
+      v13LastPosRender.id === position.id &&
+      v13LastPosRender.status === 'closed') {
+    return;
+  }
+  v13LastPosRender = { id: position.id, status: position.status };
+
+  var isClosed = position.status === 'closed';
+  var card = document.getElementById('v13PositionCard');
+  if (isClosed) card.classList.add('closed'); else card.classList.remove('closed');
+
   document.getElementById('v13PosSymbol').textContent = position.trading_symbol || '—';
   document.getElementById('v13PosDirection').textContent = position.direction;
   document.getElementById('v13PosDirection').className = 'signal-direction ' + position.direction.toLowerCase();
-  
+
   var entry = position.entry_price_actual || position.entry_price_nifty;
-  var current = currentNiftyPrice || entry;
-  var pnlPts = position.direction === 'LONG' ? current - entry : entry - current;
+  var target = position.target_level;
+  var sl = position.sl_level;
   var qty = position.entry_quantity || 65;
-  var pnlRs = pnlPts * qty;
-  
+
+  var pnlPts, pnlRs;
+  if (isClosed) {
+    pnlPts = +position.pnl_points || 0;
+    pnlRs = (position.pnl_actual != null) ? +position.pnl_actual : pnlPts * qty;
+  } else {
+    var current = currentNiftyPrice || entry;
+    pnlPts = position.direction === 'LONG' ? current - entry : entry - current;
+    pnlRs = pnlPts * qty;
+  }
+
   var pnlEl = document.getElementById('v13PosPnL');
   pnlEl.textContent = (pnlRs >= 0 ? '+' : '') + '₹' + Math.abs(pnlRs).toLocaleString('en-IN', { maximumFractionDigits: 0 });
   pnlEl.className = 'v13-position-pnl ' + (pnlRs >= 0 ? 'profit' : 'loss');
-  
-  document.getElementById('v13PosPnLSub').textContent = (pnlPts >= 0 ? '+' : '') + pnlPts.toFixed(1) + ' pts × ' + qty + ' qty';
-  
-  var target = position.target_level;
-  var sl = position.sl_level;
-  var range = target - sl;
-  var progress = Math.max(0, Math.min(100, ((current - sl) / range) * 100));
-  
+
+  var subEl = document.getElementById('v13PosPnLSub');
+  if (isClosed) {
+    var exitLabel = position.exit_type === 'target' ? 'Target ✓ Hit'
+      : position.exit_type === 'sl' ? 'SL ✗ Hit'
+      : position.exit_type === 'hard_exit' ? 'Hard Exit'
+      : position.exit_type === 'manual' ? 'Manual Exit' : 'Closed';
+    subEl.textContent = exitLabel + ' · ' + (pnlPts >= 0 ? '+' : '') + pnlPts.toFixed(1) + ' pts × ' + qty + ' qty';
+  } else {
+    subEl.textContent = (pnlPts >= 0 ? '+' : '') + pnlPts.toFixed(1) + ' pts × ' + qty + ' qty';
+  }
+
+  var progress;
+  if (isClosed) {
+    if (position.exit_type === 'target') progress = 100;
+    else if (position.exit_type === 'sl') progress = 0;
+    else {
+      var rng = target - sl;
+      var exitPx = position.exit_price_nifty || entry;
+      progress = rng > 0 ? Math.max(0, Math.min(100, ((exitPx - sl) / rng) * 100)) : 50;
+    }
+  } else {
+    var rng2 = target - sl;
+    var cur = currentNiftyPrice || entry;
+    progress = Math.max(0, Math.min(100, ((cur - sl) / rng2) * 100));
+  }
+
   var progressBar = document.getElementById('v13PosProgress');
   progressBar.style.width = progress + '%';
   progressBar.className = 'v13-position-progress-bar ' + (pnlPts >= 0 ? 'to-target' : 'to-sl');
-  
+
   document.getElementById('v13PosSLLabel').textContent = 'SL: ' + F(sl);
   document.getElementById('v13PosEntryLabel').textContent = 'Entry: ' + F(entry);
   document.getElementById('v13PosTargetLabel').textContent = 'Target: ' + F(target);
-  
+
   v13AddTradingLines(entry, target, sl);
 }
 
