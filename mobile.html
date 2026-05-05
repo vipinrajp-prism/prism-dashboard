@@ -85,7 +85,7 @@ body { font-family:'DM Sans',sans-serif; background:#080c14; color:#e2e8f0; min-
 .pattern-row-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
 .pattern-name { font-size:42px; font-weight:800; letter-spacing:-0.03em; line-height:1; }
 .pattern-desc { font-size:20px; color:#64748b; font-weight:500; }
-.pb { font-size:15px; font-weight:700; padding:8px 16px; border-radius:7px; letter-spacing:0.06em; flex-shrink:0; }
+.pb { font-size:20px; font-weight:700; padding:10px 20px; border-radius:8px; letter-spacing:0.06em; flex-shrink:0; }
 .pb-fired { background:rgba(34,197,94,0.12); color:#22c55e; }
 .pb-mon { background:rgba(255,255,255,0.06); color:#94a3b8; }
 .pb-block { background:rgba(239,68,68,0.12); color:#ef4444; }
@@ -103,37 +103,37 @@ body { font-family:'DM Sans',sans-serif; background:#080c14; color:#e2e8f0; min-
 .p-sd1{color:#ef4444}.p-sd2{color:#f87171}.p-sd3{color:#fb7185}.p-sd4{color:#ec4899}.p-sd5{color:#d946ef}
 /* Event Log section */
 .events-section { margin:18px; border-radius:14px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); overflow:hidden; }
-.events-title { padding:18px; font-size:19px; font-weight:700; color:#94a3b8; letter-spacing:0.06em; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.04); }
+.events-title { padding:18px; font-size:22px; font-weight:700; color:#94a3b8; letter-spacing:0.06em; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.04); }
 .events-list { max-height:600px; overflow-y:auto; }
-.log-item { display:flex; flex-direction:column; gap:7px; padding:18px; border-bottom:1px solid rgba(255,255,255,0.02); line-height:1.45; }
+.log-item { display:flex; flex-direction:column; gap:8px; padding:20px 18px; border-bottom:1px solid rgba(255,255,255,0.02); line-height:1.45; }
 .log-item:last-child { border-bottom:none; }
-.log-time { color:#64748b; font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:700; letter-spacing:0.02em; }
-.log-msg { color:#94a3b8; font-size:20px; word-break:break-word; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.log-time { color:#64748b; font-family:'JetBrains Mono',monospace; font-size:21px; font-weight:700; letter-spacing:0.02em; }
+.log-msg { color:#94a3b8; font-size:23px; word-break:break-word; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.4; }
 .log-msg.info { color:#06b6d4; }
 .log-msg.highlight { color:#f59e0b; }
 .log-msg.error { color:#ef4444; }
-.events-empty { padding:32px; text-align:center; color:#475569; font-size:18px; font-style:italic; }
+.events-empty { padding:32px; text-align:center; color:#475569; font-size:20px; font-style:italic; }
 
 .verify-section { margin:18px; border-radius:14px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); overflow:hidden; }
 .verify-head { display:flex; justify-content:space-between; align-items:center; padding:18px; border-bottom:1px solid rgba(255,255,255,0.04); flex-wrap:wrap; gap:12px; }
-.verify-title { font-size:19px; font-weight:700; color:#94a3b8; letter-spacing:0.06em; text-transform:uppercase; }
-.verify-pat { font-size:34px; font-weight:800; letter-spacing:-0.02em; font-family:'JetBrains Mono',monospace; }
-.verify-summary { display:inline-block; padding:8px 16px; border-radius:7px; font-size:15px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; }
+.verify-title { font-size:22px; font-weight:700; color:#94a3b8; letter-spacing:0.06em; text-transform:uppercase; }
+.verify-pat { font-size:38px; font-weight:800; letter-spacing:-0.02em; font-family:'JetBrains Mono',monospace; }
+.verify-summary { display:inline-block; padding:10px 18px; border-radius:8px; font-size:18px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; }
 .verify-summary.ok { background:rgba(34,197,94,0.14); color:#22c55e; border:1px solid rgba(34,197,94,0.25); }
 .verify-summary.fail { background:rgba(239,68,68,0.14); color:#ef4444; border:1px solid rgba(239,68,68,0.25); }
 .verify-summary.partial { background:rgba(245,158,11,0.14); color:#f59e0b; border:1px solid rgba(245,158,11,0.25); }
-.verify-rule { padding:20px 18px; border-bottom:1px dashed rgba(255,255,255,0.03); display:grid; grid-template-columns:38px 1fr; column-gap:14px; align-items:start; }
+.verify-rule { padding:22px 18px; border-bottom:1px dashed rgba(255,255,255,0.03); display:grid; grid-template-columns:42px 1fr; column-gap:14px; align-items:start; }
 .verify-rule:last-child { border-bottom:none; }
-.verify-icon { font-size:32px; font-weight:800; font-family:'JetBrains Mono',monospace; text-align:center; line-height:1.1; }
+.verify-icon { font-size:36px; font-weight:800; font-family:'JetBrains Mono',monospace; text-align:center; line-height:1.1; }
 .verify-rule.pass .verify-icon { color:#22c55e; }
 .verify-rule.fail .verify-icon { color:#ef4444; }
 .verify-rule.unk .verify-icon { color:#64748b; }
-.verify-desc { color:#cbd5e1; font-weight:600; font-size:22px; line-height:1.4; }
-.verify-actual { color:#64748b; font-size:16px; font-family:'JetBrains Mono',monospace; margin-top:8px; word-break:break-word; line-height:1.5; }
+.verify-desc { color:#cbd5e1; font-weight:600; font-size:25px; line-height:1.4; }
+.verify-actual { color:#64748b; font-size:19px; font-family:'JetBrains Mono',monospace; margin-top:10px; word-break:break-word; line-height:1.5; }
 .verify-rule.pass .verify-actual { color:#94a3b8; }
 .verify-rule.fail .verify-actual { color:#f87171; }
-.verify-empty { padding:32px; text-align:center; color:#475569; font-size:18px; font-style:italic; }
-.verify-warn { padding:16px 18px; margin:14px 18px 18px; background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.15); border-radius:7px; font-size:17px; color:#f59e0b; line-height:1.5; }
+.verify-empty { padding:32px; text-align:center; color:#475569; font-size:20px; font-style:italic; }
+.verify-warn { padding:18px 20px; margin:14px 18px 18px; background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.15); border-radius:7px; font-size:20px; color:#f59e0b; line-height:1.5; }
 .footer { text-align:center; padding:20px; font-size:14px; color:#334155; }
 </style>
 </head>
@@ -303,7 +303,7 @@ function showWaiting(t){hideAll();document.getElementById("tradeWaiting").style.
 function showSignal(sig){hideAll();document.getElementById("signalCard").className="signal-card show";document.getElementById("sigPattern").textContent=sig.pattern;var d=sig.direction||"—",de=document.getElementById("sigDir");de.textContent=d;de.className="signal-dir "+d.toLowerCase();var se=document.getElementById("sigStatus");se.textContent=sig.status==="pending"?"⏳ Pending approval":"⚡ Auto-executing...";se.className="signal-status "+(sig.status==="pending"?"pending":"executed");document.getElementById("sigEntry").textContent=F(sig.entry_level);document.getElementById("sigTarget").textContent=F(sig.target_level);document.getElementById("sigSL").textContent=F(sig.sl_level)}
 function showLimitPending(sig,st){hideAll();document.getElementById("signalCard").className="signal-card show";document.getElementById("sigPattern").textContent=st.pending_limit_pattern||(sig?sig.pattern:"—");var d=st.pending_limit_direction||(sig?sig.direction:"—"),de=document.getElementById("sigDir");de.textContent=d;de.className="signal-dir "+(d||"").toLowerCase();var se=document.getElementById("sigStatus");se.textContent="📍 LIMIT PENDING — spot must reach "+F(st.pending_limit_entry_level);se.className="signal-status limit-pending";document.getElementById("sigEntry").textContent=F(st.pending_limit_entry_level);document.getElementById("sigTarget").textContent=sig?F(sig.target_level):"—";document.getElementById("sigSL").textContent=sig?F(sig.sl_level):"—"}
 function showPosition(pos,st){hideAll();document.getElementById("positionCard").className="position-card show";document.getElementById("posPattern").textContent=pos.pattern||(st?st.active_pattern:"")||"OPEN";var d=pos.direction,de=document.getElementById("posDir");de.textContent=d;de.className="signal-dir "+d.toLowerCase();var entry=pos.entry_price_actual||pos.entry_price_nifty,cur=currentNiftyPrice||entry,pts=d==="LONG"?cur-entry:entry-cur,qty=pos.entry_quantity||65,rs=pts*qty;var pe=document.getElementById("posPnL");pe.textContent=(rs>=0?"+":"")+"₹"+Math.abs(rs).toLocaleString("en-IN",{maximumFractionDigits:0});pe.className="position-pnl-value "+(rs>=0?"profit":"loss");document.getElementById("posPnLSub").textContent=(pts>=0?"+":"")+pts.toFixed(1)+" pts × "+qty+" qty";var tgt=pos.target_level,sl=pos.sl_level,rng=tgt-sl,prog=Math.max(0,Math.min(100,((cur-sl)/rng)*100));var bar=document.getElementById("posProgress");bar.style.width=prog+"%";bar.className="position-progress-bar "+(pts>=0?"to-target":"to-sl");document.getElementById("posSLLabel").textContent="SL: "+F(sl);document.getElementById("posEntryLabel").textContent="Entry: "+F(entry);document.getElementById("posTargetLabel").textContent="Target: "+F(tgt);document.getElementById("posEntry").textContent=F(entry);document.getElementById("posTarget").textContent=F(tgt);document.getElementById("posSL").textContent=F(sl)}
-function showResult(pos){hideAll();document.getElementById("tradeResult").className="trade-result show";var t=pos.exit_type||"closed",te=document.getElementById("resultType"),lb={target:"TARGET HIT ✓",sl:"STOP LOSS ✗",hard_exit:"HARD EXIT ⏰",manual:"MANUAL EXIT"};te.textContent=lb[t]||t.toUpperCase();te.className="trade-result-type "+t;var pnl=Number(pos.pnl_points||0),qty=pos.entry_quantity||65,rs=pnl*qty;var pe=document.getElementById("resultPnL");pe.textContent=(rs>=0?"+":"")+"₹"+Math.abs(rs).toLocaleString("en-IN",{maximumFractionDigits:0})+" ("+(pnl>=0?"+":"")+pnl.toFixed(1)+" pts)";pe.style.color=rs>=0?"#22c55e":"#ef4444"}
+function showResult(pos){hideAll();document.getElementById("tradeResult").className="trade-result show";var t=pos.exit_type||"closed",te=document.getElementById("resultType"),lb={target:"TARGET HIT ✓",sl:"STOP LOSS ✗",hard_exit:"HARD EXIT ⏰",manual:"MANUAL EXIT"};te.textContent=lb[t]||t.toUpperCase();te.className="trade-result-type "+t;var pnl=Number(pos.pnl_points||0),qty=pos.entry_quantity||65,rs=pnl*qty;var pe=document.getElementById("resultPnL");pe.innerHTML='<div style="color:'+(rs>=0?"#22c55e":"#ef4444")+'">'+(rs>=0?"+":"")+'₹'+Math.abs(rs).toLocaleString("en-IN",{maximumFractionDigits:0})+'</div><div class="trade-result-pts" style="color:'+(rs>=0?"#22c55e":"#ef4444")+'">'+(pnl>=0?"+":"")+pnl.toFixed(1)+' pts</div>';pe.style.color=""}
 function renderPatterns(st){var el=document.getElementById("patternList");if(!st||!st.c1_type){el.innerHTML='<div style="padding:16px;text-align:center;color:#334155;font-size:12px">No session data</div>';document.getElementById("patternsTitle").textContent="PATTERNS";return}var cn=st.candles_processed||0;document.getElementById("patternsTitle").textContent=st.c1_type==="seller"?"SELLER PATTERNS":"BUYER PATTERNS";var rows=[];if(st.c1_type==="seller"){var dl={SB1:4,SB2:60,SA1:8,SC1:20};["SB1","SB2","SA1","SC1"].forEach(function(p){var conf=st[p.toLowerCase()+"_confirmed"],fired=st.seller_pattern_fired,s,b;if(conf){s="FIRED";b="fired"}else if(fired&&fired!=="SA1_NO_TRADE"){s="BLOCKED";b="block"}else if(cn>(dl[p]||60)){s="EXPIRED";b="exp"}else{s="MONITORING";b="mon"}rows.push({p:p,s:s,b:b,o:conf?0:s==="MONITORING"?1:2,c:"p-"+p.toLowerCase()})});["SD1","SD2","SD3","SD4","SD5"].forEach(function(p){var s,b;if(st.sd_pattern===p){if(st.trade_taken){s="FIRED";b="fired"}else if(st.pending_limit_entry_level!=null){s="LIMIT PENDING";b="lp"}else{s="NO ENTRY";b="ne"}}else if(st.sd_pattern_evaluated||cn>=20){s="—";b="nm"}else{s="PENDING (C20)";b="pend"}if(st.seller_pattern_fired&&st.seller_pattern_fired!=="SA1_NO_TRADE"&&st.sd_pattern!==p){s="BLOCKED";b="block"}rows.push({p:p,s:s,b:b,o:s==="FIRED"||s==="LIMIT PENDING"||s==="NO ENTRY"?0:s==="MONITORING"||s==="PENDING (C20)"?1:2,c:"p-"+p.toLowerCase()})})}else{var dl={BA1:20,BB1:40,BC1:20,BC2:60};["BA1","BB1","BC1","BC2"].forEach(function(p){var conf=st[p.toLowerCase()+"_confirmed"],fired=st.buyer_pattern_fired,s,b;if(conf){s="FIRED";b="fired"}else if(fired){s="BLOCKED";b="block"}else if(cn>(dl[p]||60)){s="EXPIRED";b="exp"}else{s="MONITORING";b="mon"}rows.push({p:p,s:s,b:b,o:conf?0:s==="MONITORING"?1:2,c:"p-"+p.toLowerCase()})})}rows.sort(function(a,b){return a.o-b.o});var h="";rows.forEach(function(r){h+='<div class="pattern-row"><div class="pattern-row-top"><span class="pattern-name '+r.c+'">'+r.p+'</span><span class="pb pb-'+r.b+'">'+r.s+'</span></div><div class="pattern-desc">'+(PM[r.p]?PM[r.p].d:"")+'</div></div>'});el.innerHTML=h}
 
 function renderEvents(logs){
