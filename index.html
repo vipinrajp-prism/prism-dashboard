@@ -4602,13 +4602,37 @@ var PATTERN_RULES = {
   ],
   SA1: [
     { d: 'C1 is seller', e: function(s) { return { ok: s.c1_type === 'seller', actual: 'C1 type: '+(s.c1_type||'?') }; }},
-    { d: 'C1 low broken downward', e: function(s) {
-      return { ok: s.sa1_low_break_candle != null, actual: 'low break @ C'+(s.sa1_low_break_candle||'?') };
+    { d: 'Low break in C3–C8 window', e: function(s) {
+      var c = s.sa1_low_break_candle;
+      if (c == null) return { ok: null, actual: 'no low break detected yet' };
+      return { ok: c >= 3 && c <= 8, actual: 'low break @ C'+c+' (window C3–C8)' };
     }},
-    { d: 'Reversal confirmed (close back above)', e: function(s) {
-      return { ok: !!s.sa1_confirmed, actual: 'C1 low: '+vfNum(s.c1_low) };
+    { d: 'Reference candle = cn-1 of break', e: function(s) {
+      var ref = s.sa1_reference_candle, bk = s.sa1_low_break_candle;
+      if (ref == null || bk == null) return { ok: null, actual: 'reference not stored' };
+      return { ok: ref === bk - 1, actual: 'ref C'+ref+' (break C'+bk+', expected C'+(bk-1)+')' };
     }},
-    { d: 'Direction: LONG (reversal)', e: function(s, sig) { return { ok: !sig || sig.direction === 'LONG', actual: 'dir: '+(sig?sig.direction:'?') }; }},
+    { d: 'Reversal: high > sa1_reference_high (by C8)', e: function(s) {
+      return { ok: !!s.sa1_confirmed, actual: s.sa1_confirmed ? 'confirmed (ref_high='+vfNum(s.sa1_reference_high)+')' : 'not confirmed' };
+    }},
+    { d: 'F1 (PDH Breakdown) not blocking', e: function(s, sig, pos, pv) {
+      if (!pv) return { ok: null, actual: 'pivots missing' };
+      if (s.c1_open == null || s.c1_close == null) return { ok: null, actual: 'C1 OHLC missing' };
+      var f1Active = s.c1_open > pv.pdh && s.c1_close < pv.pdh;
+      // If signal exists and pattern fired, F1 wasn't blocking (good)
+      // If F1 active AND signal exists → F1 should have blocked, this is a violation
+      var sigExists = !!sig;
+      return { ok: !f1Active || !sigExists, actual: f1Active ? 'F1 ACTIVE (PDH '+vfNum(pv.pdh)+', open '+vfNum(s.c1_open)+', close '+vfNum(s.c1_close)+')' : 'F1 inactive' };
+    }},
+    { d: 'Direction: LONG (or SA1_NO_TRADE if C1 close inside CPR)', e: function(s, sig, pos, pv) {
+      if (!sig) return { ok: true, actual: 'no signal — likely no fire yet' };
+      var isNT = sig.pattern && sig.pattern.indexOf('NO_TRADE') !== -1;
+      if (!pv) return { ok: sig.direction === 'LONG', actual: 'dir: '+sig.direction+(isNT?' (NO_TRADE)':'') };
+      var c1Inside = s.c1_close >= pv.cpr_bottom && s.c1_close <= pv.cpr_top;
+      // If C1 close inside CPR, signal MUST be NO_TRADE
+      if (c1Inside) return { ok: isNT, actual: 'C1 close '+vfNum(s.c1_close)+' inside CPR → '+(isNT?'NO_TRADE ✓':'should be NO_TRADE!') };
+      return { ok: sig.direction === 'LONG' && !isNT, actual: 'dir: '+sig.direction+' (C1 outside CPR)' };
+    }},
   ],
   SC1: [
     { d: 'C1 is seller', e: function(s) { return { ok: s.c1_type === 'seller', actual: 'C1 type: '+(s.c1_type||'?') }; }},
