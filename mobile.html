@@ -409,8 +409,11 @@ var PATTERN_RULES={
   ],
   SC1:[
     {d:"C1 is seller",e:function(s){return{ok:s.c1_type==="seller",actual:"C1 type: "+(s.c1_type||"?")}}},
-    {d:"Multi-pivot breakdown (≥1 pivot crossed)",e:function(s){return{ok:(s.sc1_pivots_crossed||0)>=1,actual:(s.sc1_pivots_crossed||0)+" pivot(s) crossed"}}},
+    {d:"C1 close NOT above CPR Top",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};if(s.c1_close==null)return{ok:null,actual:"C1 close missing"};return{ok:s.c1_close<=pv.cpr_top,actual:vfNum(s.c1_close)+" vs CPR Top "+vfNum(pv.cpr_top)}}},
+    {d:"C2 high < C1 high (not SC1_INVALID)",e:function(s){return{ok:!s.sc1_invalid,actual:s.sc1_invalid?"INVALID — C2 ≥ C1 high":"valid (C2 < C1 high)"}}},
+    {d:"Pivots crossed ≥2 (engine verifies internally)",e:function(s){if(s.sc1_confirmed)return{ok:true,actual:"verified at fire time (count not persisted in DB by engine)"};return{ok:null,actual:"awaiting fire"}}},
     {d:"SC1 confirmed",e:function(s){return{ok:!!s.sc1_confirmed,actual:s.sc1_confirmed?"confirmed":"pending"}}},
+    {d:"Trigger candle in C9–C20 entry window",e:function(s,sg){var c=sg?sg.trigger_candle:null;if(c==null)return{ok:null,actual:"no trigger candle"};return{ok:c>=9&&c<=20,actual:"fired @ C"+c+" (entry window C9–C20)"}}},
     {d:"Direction: SHORT",e:function(s,sg){return{ok:!sg||sg.direction==="SHORT",actual:"dir: "+(sg?sg.direction:"?")}}}
   ],
   SD1:[
