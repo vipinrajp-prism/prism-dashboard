@@ -396,6 +396,28 @@ td{padding:7px 8px;color:#cbd5e1;white-space:nowrap;border-bottom:1px solid rgba
 .tl-empty{padding:18px 8px;text-align:center;color:#475569;font-size:11px;font-style:italic}
 /* Pattern Verification panel */
 .verify-box{padding:12px;border-top:1px solid rgba(255,255,255,0.06)}
+.logic-box{padding:12px;border-top:1px solid rgba(255,255,255,0.06)}
+.lg-row{padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:2px}
+.lg-row:last-child{border-bottom:none}
+.lg-label{font-size:10px;color:#64748b;font-weight:700;letter-spacing:0.05em;text-transform:uppercase}
+.lg-value{color:#cbd5e1;font-size:12px;font-weight:500;line-height:1.4}
+.lg-value.dir-long{color:#22c55e;font-weight:700}
+.lg-value.dir-short{color:#ef4444;font-weight:700}
+.lg-value.summary{color:#94a3b8;font-style:italic}
+.lg-value.warn{color:#f59e0b}
+.lg-empty{padding:18px 8px;text-align:center;color:#475569;font-size:11px;font-style:italic}
+.lg-pat-line{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:8px}
+.lg-pat{font-size:16px;font-weight:800;letter-spacing:-0.01em;font-family:'JetBrains Mono',monospace}
+.lg-pat-name{font-size:12px;color:#cbd5e1;font-weight:600}
+.lg-no-trade-banner{padding:8px 10px;background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:5px;margin:6px 0;color:#a78bfa;font-size:11px;font-weight:600;line-height:1.4}
+.v13-verify-toggle{user-select:none;transition:opacity 0.15s}
+.v13-verify-toggle:hover{opacity:0.85}
+.v13-verify-arrow{font-size:14px;color:#64748b;transition:transform 0.2s;display:inline-block}
+.verify-box.expanded .v13-verify-arrow{transform:rotate(180deg)}
+.v13-vbadge{display:inline-block;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;margin-left:8px;font-family:'DM Sans',sans-serif}
+.v13-vbadge.ok{background:rgba(34,197,94,0.14);color:#22c55e}
+.v13-vbadge.fail{background:rgba(239,68,68,0.14);color:#ef4444}
+.v13-vbadge.partial{background:rgba(245,158,11,0.14);color:#f59e0b}
 .vf-header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:8px}
 .vf-pat{font-size:13px;font-weight:800;letter-spacing:0.02em;font-family:'JetBrains Mono',monospace}
 .vf-summary{display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;font-family:'DM Sans',sans-serif}
@@ -802,9 +824,18 @@ th.sortable.active .sort-icon{color:#06b6d4}
             <div class="section-title">🎯 TRADE LEVELS</div>
             <div id="v13TradeLevels"><div class="tl-empty">No active trade</div></div>
           </div>
-          <div class="verify-box">
-            <div class="section-title">🧮 PATTERN VERIFICATION</div>
-            <div id="v13Verification"><div class="vf-empty">No pattern fired yet</div></div>
+          <div class="logic-box">
+            <div class="section-title">📋 PATTERN LOGIC</div>
+            <div id="v13Logic"><div class="lg-empty">No pattern fired yet</div></div>
+          </div>
+          <div class="verify-box" id="v13VerifySection">
+            <div class="section-title v13-verify-toggle" id="v13VerifyToggle" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+              <span>🧮 VERIFICATION <span id="v13VerifyBadge"></span></span>
+              <span class="v13-verify-arrow">▼</span>
+            </div>
+            <div id="v13VerifyBodyWrap" style="display:none;">
+              <div id="v13Verification"><div class="vf-empty">No pattern fired yet</div></div>
+            </div>
           </div>
         </div>
       </div>
@@ -4000,6 +4031,10 @@ async function checkSignalsAndPositions(sessionId, state) {
     if (typeof v13UpdateVerification === 'function') {
       v13UpdateVerification(state, latestSig, latestPos, v13CurrentPivots);
     }
+    // Update Pattern Logic panel (reference doc)
+    if (typeof v13UpdateLogic === 'function') {
+      v13UpdateLogic(state, latestSig, latestPos);
+    }
   } catch (err) {
     console.error("Check signals/positions error:", err);
   }
@@ -4491,6 +4526,113 @@ function v13UpdateTradeLevels(state, signal, position) {
 
 function vfNum(n) { return n != null ? (+n).toFixed(2) : '?'; }
 
+// PATTERN_LOGIC — verbatim from PRISM15_v1.0_Locked_Pattern_Logic.docx
+var PATTERN_LOGIC = {
+  SB1: { name:"C1 High Breakout (Outside)", dir:"LONG", rows:[
+    ["C1 Prerequisite", "Seller candle AND completely outside CPR (high < cpr_bottom OR low > cpr_top)"],
+    ["Detection Window", "C2 to C4 (SB1_SB2_WINDOW_END)"],
+    ["Trigger Condition", "Candle high > C1 high (strict)"],
+    ["Entry Type", "MARKET"],
+    ["Entry Level", "Trigger candle close"],
+    ["Target / SL", "±50 Nifty points"],
+    ["Bible Filter", "F1 (PDH Breakdown) can block this"],
+  ], summary:"C1 was seller outside CPR, but next 3 candles reverse and break C1 high = failed breakdown = LONG reversal." },
+  SB2: { name:"C1 High Breakout (Inside CPR)", dir:"SHORT", rows:[
+    ["C1 Prerequisite", "Seller candle AND any part inside CPR"],
+    ["Detection Window", "C2–C4 for reference candle; break can be C3 to entry deadline"],
+    ["Step 1 — Reference", "First C2-C4 candle whose high > C1 high becomes reference. Store reference_candle, reference_high."],
+    ["Step 2 — Break", "Any subsequent candle whose high > reference_high fires SB2."],
+    ["Entry Type", "MARKET"],
+    ["Entry Level", "Break candle close"],
+    ["Target / SL", "±50 Nifty points"],
+  ], summary:"C1 seller inside CPR fails — then a subsequent candle fails again after setting a new high. Two failed attempts to rally = SHORT continuation." },
+  SA1: { name:"Low Break Reversal", dir:"LONG", rows:[
+    ["C1 Prerequisite", "Seller candle (any CPR location)"],
+    ["Detection Window", "C3 to C8 (SA1_DETECTION_WINDOW)"],
+    ["Step 1 — Low Break", "On C3-C8: low < prev_running_low (computed from candles array, NOT state.running_low — Bug #44 fix). Stores sa1_low_break_candle, sa1_reference_candle = cn-1, sa1_reference_high."],
+    ["Step 2 — Reversal", "On any subsequent candle up to C8: if high > sa1_reference_high → SA1 fires."],
+    ["Entry Type", "MARKET"],
+    ["Entry Level", "Confirmation candle close"],
+    ["SA1_NO_TRADE", "If C1 close inside CPR, SA1 detected but NO_TRADE (no signal). Does NOT block SD family."],
+    ["Bible Filter", "F1 (PDH Breakdown) can block this"],
+  ], summary:"C1 seller → price breaks lower → fails to continue, instead reverses and breaks above reference candle high = LONG reversal." },
+  SC1: { name:"Multi-Pivot Breakdown", dir:"SHORT", rows:[
+    ["C1 Prerequisite", "Seller candle AND C1 close NOT above CPR Top"],
+    ["Detection Window", "C2 to C20"],
+    ["Entry Allowed From", "C9 (SC1_ENTRY_START)"],
+    ["Invalidation", "If C2 high ≥ C1 high → SC1 permanently invalid (sc1_invalid = true)"],
+    ["Pivot Crossing", "Pivot below C1 high crossed when (a) any candle high reached pivot AND (b) later candle close fell below it. pivotHighSeen prevents recount."],
+    ["Trigger Condition", "≥2 pivot crossings AND at least one candle closed below the lowest pivot crossed"],
+    ["Entry Type", "MARKET"],
+    ["Entry Level", "min(C2 high, lowest pivot crossed)"],
+    ["Target / SL", "±50 Nifty points"],
+  ], summary:"Multiple pivot levels crossed from above = real breakdown momentum. ≥2 crossings rule filters out single-level fakeouts." },
+  SD1: { name:"C2 Entire Above PDH", dir:"SHORT", rows:[
+    ["Match Condition", "C2 low > PDH AND C2 close > PDH (entire C2 above PDH)"],
+    ["Entry Type", "LIMIT"],
+    ["Entry Level", "C1 high − 10"],
+    ["Family", "SD evaluated once at C20. Requires C1 seller, no earlier seller pattern fired (or SA1_NO_TRADE), C2 close < C1 close."],
+  ], summary:"C2 couldn't push higher despite being in buyer territory. Wait for pullback to C1 high area for short entry." },
+  SD2: { name:"C2 Above CPR, Below PDH", dir:"SHORT", rows:[
+    ["Match Condition", "C2 close < PDH AND C2 close > CPR Top"],
+    ["Entry Type", "LIMIT"],
+    ["Entry Level", "C2 high"],
+    ["Family", "SD evaluated once at C20. Requires C1 seller, no earlier seller pattern, C2 close < C1 close."],
+  ], summary:"C2 rejected PDH but held above CPR — short at C2 high expecting failure to re-test PDH." },
+  SD3: { name:"C2 Close Inside CPR", dir:"SHORT", rows:[
+    ["Match Condition", "CPR Bottom ≤ C2 close ≤ CPR Top"],
+    ["Entry Type", "LIMIT"],
+    ["Entry Level", "CPR Top"],
+    ["Family", "SD evaluated once at C20. Requires C1 seller, no earlier seller pattern, C2 close < C1 close."],
+  ], summary:"C2 pulled back into CPR. Wait for pullback to CPR Top to short." },
+  SD4: { name:"C2 Below CPR, Above PDL", dir:"SHORT", rows:[
+    ["Match Condition", "C2 close < CPR Bottom AND C2 close > PDL"],
+    ["Entry Type", "LIMIT"],
+    ["Entry Level", "CPR Bottom"],
+    ["Family", "SD evaluated once at C20. Requires C1 seller, no earlier seller pattern, C2 close < C1 close."],
+  ], summary:"C2 broke below CPR. CPR Bottom now resistance — wait for pullback to short." },
+  SD5: { name:"C2 Close at or Below PDL", dir:"SHORT", rows:[
+    ["Match Condition", "C2 close ≤ PDL"],
+    ["Entry Type", "LIMIT"],
+    ["Entry Level", "If C1 crossed pivots: min(Day High − 10, highest pivot crossed − 10). Else: Day High − 10."],
+    ["Known Weakness", "Extreme gap-down days (e.g., April 2, 2026: −500pt gap), entry often unreachable."],
+  ], summary:"Extreme breakdown. C2 already below PDL. Entry pulls back to Day High or highest pivot C1 crossed." },
+  BA1: { name:"Pivot Touch Rejection", dir:"SHORT", rows:[
+    ["C1 Prerequisite", "Buyer candle AND completely outside CPR"],
+    ["Detection Window", "C1 to C20"],
+    ["Scenario 1 — Below Pivot", "Candle high < pivot AND high within (pivot − 10) range. If close in (pivot−10..pivot) → IMMEDIATE SHORT. Else wait for re-entry."],
+    ["Scenario 2 — Crossing Pivot", "Candle high ≥ pivot AND low < pivot. If close ≤ pivot+10 → IMMEDIATE SHORT."],
+    ["Entry Type", "MARKET"],
+    ["Bible Filter", "F3 (Above PDH) can block this"],
+  ], summary:"Buyer C1 outside CPR → rally hits pivot resistance → rejection. Either immediate or delayed (re-entry)." },
+  BB1: { name:"PE Reference High", dir:"SHORT", rows:[
+    ["C1 Prerequisite", "Buyer candle AND completely outside CPR"],
+    ["Detection Window", "C2 to C40 (9:25 AM hard deadline)"],
+    ["C2 Init", "bb1_running_low = C2 low; bb1_limit_level = running_low + 50"],
+    ["C3+ Update", "If current low < running_low → update + recalc limit_level"],
+    ["Fill Condition", "Current candle high ≥ limit_level → SHORT LIMIT entry at limit_level"],
+    ["9:25 Hard Check", "If unfilled at C40 and close ≥ running_low + 25 → SHORT MARKET. Else BB1_SKIP."],
+    ["Entry Type", "LIMIT (primary) or MARKET (9:25 hard entry)"],
+    ["Bible Filter", "F3 (Above PDH) can block this"],
+  ], summary:"Track session low after buyer C1. Short on bounce 50pts above running low. 9:25 deadline: 25pt bounce = take, else skip." },
+  BC1: { name:"CPR Inside Pullback", dir:"LONG", rows:[
+    ["C1 Prerequisite", "Buyer AND any part of C1 inside CPR AND C1 close > PP AND C1 close < CPR Top"],
+    ["Detection Window", "C9 to C20 (strict 9:20 AM deadline)"],
+    ["Entry Condition", "Current candle close ≤ CPR Top + 5 (BC1_CPR_BUFFER)"],
+    ["Entry Type", "MARKET"],
+    ["Entry Level", "Current candle close"],
+    ["Deadline Rationale", "C20 is stricter than global C60. BC1 setups invalidate quickly."],
+  ], summary:"C1 closed above PP but below CPR Top — indecisive bullish. Wait for pullback into CPR Top area for LONG continuation." },
+  BC2: { name:"Above CPR Top", dir:"LONG", rows:[
+    ["C1 Prerequisite", "Buyer AND any part of C1 inside CPR AND C1 close > CPR Top"],
+    ["Detection Window", "Fires on first eligible candle (typically C2)"],
+    ["Entry Condition", "None — fires immediately when prerequisites met"],
+    ["Entry Type", "MARKET"],
+    ["Entry Level", "C1 close"],
+    ["Note", "BC2 locks the session immediately, preventing BC1 from firing same day."],
+  ], summary:"C1 started inside CPR and closed above CPR Top = confirmed breakout. Enter LONG immediately at C1 close." },
+};
+
 var PATTERN_RULES = {
   // ── BUYER PATTERNS ──
   BC1: [
@@ -4698,11 +4840,58 @@ var PATTERN_RULES = {
 // Strip _NO_TRADE suffix when looking up rules
 function vfPatternKey(p) { return (p || '').replace('_NO_TRADE', ''); }
 
-function v13UpdateVerification(state, signal, position, pivots) {
-  var el = document.getElementById('v13Verification');
+function v13UpdateLogic(state, signal, position) {
+  var el = document.getElementById('v13Logic');
   if (!el) return;
 
-  // Determine which pattern to verify (closed > open > pending > detected)
+  var pat = null, isNT = false;
+  if (position && (position.status === 'closed' || position.status === 'open')) {
+    pat = (signal && signal.pattern) || position.pattern;
+  } else if (signal) {
+    pat = signal.pattern;
+  } else if (state) {
+    pat = state.active_pattern || state.seller_pattern_fired || state.buyer_pattern_fired;
+  }
+
+  if (!pat) {
+    el.innerHTML = '<div class="lg-empty">No pattern fired yet</div>';
+    return;
+  }
+  if (pat.indexOf && pat.indexOf('NO_TRADE') !== -1) isNT = true;
+  var key = vfPatternKey(pat);
+  var spec = PATTERN_LOGIC[key];
+
+  if (!spec) {
+    el.innerHTML = '<div class="lg-empty">Logic for <b>'+key+'</b> not yet documented</div>';
+    return;
+  }
+
+  var patColor = (typeof PC === 'function') ? PC(key) : '#94a3b8';
+  var html = '';
+  html += '<div class="lg-pat-line">';
+  html += '<span class="lg-pat" style="color:'+patColor+'">'+key+'</span>';
+  html += '<span class="lg-pat-name">'+spec.name+'</span>';
+  html += '</div>';
+  if (isNT) {
+    html += '<div class="lg-no-trade-banner">⚡ Detected as <b>'+pat+'</b> — pattern logic recognized but execution skipped</div>';
+  }
+  html += '<div class="lg-row"><div class="lg-label">Trade Direction</div><div class="lg-value dir-'+spec.dir.toLowerCase()+'">'+spec.dir+'</div></div>';
+  spec.rows.forEach(function(r) {
+    var cls = 'lg-value';
+    if (r[0].indexOf('Bible') !== -1 || r[0].indexOf('Weakness') !== -1 || r[0].indexOf('NO_TRADE') !== -1) cls = 'lg-value warn';
+    html += '<div class="lg-row"><div class="lg-label">'+r[0]+'</div><div class="'+cls+'">'+r[1]+'</div></div>';
+  });
+  if (spec.summary) {
+    html += '<div class="lg-row"><div class="lg-label">Logic Summary</div><div class="lg-value summary">'+spec.summary+'</div></div>';
+  }
+  el.innerHTML = html;
+}
+
+function v13UpdateVerification(state, signal, position, pivots) {
+  var el = document.getElementById('v13Verification');
+  var badgeEl = document.getElementById('v13VerifyBadge');
+  if (!el) return;
+
   var pat = null;
   if (position && (position.status === 'closed' || position.status === 'open')) {
     pat = (signal && signal.pattern) || position.pattern;
@@ -4714,6 +4903,7 @@ function v13UpdateVerification(state, signal, position, pivots) {
 
   if (!pat) {
     el.innerHTML = '<div class="vf-empty">No pattern fired yet</div>';
+    if (badgeEl) badgeEl.innerHTML = '';
     return;
   }
 
@@ -4722,10 +4912,10 @@ function v13UpdateVerification(state, signal, position, pivots) {
 
   if (!rules) {
     el.innerHTML = '<div class="vf-empty">Verification rules for <b>'+key+'</b> not yet defined</div>';
+    if (badgeEl) badgeEl.innerHTML = '';
     return;
   }
 
-  // Evaluate each rule
   var passed = 0, failed = 0, unknown = 0;
   var rulesHtml = '';
   rules.forEach(function(r) {
@@ -4742,24 +4932,18 @@ function v13UpdateVerification(state, signal, position, pivots) {
     rulesHtml += '</div>';
   });
 
-  // Summary badge
   var sumCls, sumLbl;
-  if (failed > 0) { sumCls = 'fail'; sumLbl = 'RULE VIOLATION'; }
+  if (failed > 0) { sumCls = 'fail'; sumLbl = 'VIOLATION'; }
   else if (unknown > 0 && passed === 0) { sumCls = 'partial'; sumLbl = 'INCOMPLETE'; }
-  else if (unknown > 0) { sumCls = 'partial'; sumLbl = passed+'/'+rules.length+' VERIFIED'; }
-  else { sumCls = 'ok'; sumLbl = 'EXECUTION VALID'; }
+  else if (unknown > 0) { sumCls = 'partial'; sumLbl = passed+'/'+rules.length; }
+  else { sumCls = 'ok'; sumLbl = 'VALID'; }
 
-  var patColor = (typeof PC === 'function') ? PC(key) : '#94a3b8';
-  var html = '';
-  html += '<div class="vf-header">';
-  html += '<span class="vf-pat" style="color:'+patColor+'">'+key+'</span>';
-  html += '<span class="vf-summary '+sumCls+'">'+sumLbl+'</span>';
-  html += '</div>';
-  html += rulesHtml;
+  if (badgeEl) badgeEl.innerHTML = '<span class="v13-vbadge '+sumCls+'">'+sumLbl+'</span>';
+
   if (failed > 0) {
-    html += '<div class="vf-warn">⚠ Engine fired this pattern but '+failed+' rule(s) failed verification. Possible bug — investigate.</div>';
+    rulesHtml += '<div class="vf-warn">⚠ Engine fired this pattern but '+failed+' rule(s) failed verification. Possible bug — investigate.</div>';
   }
-  el.innerHTML = html;
+  el.innerHTML = rulesHtml;
 }
 
 function v13UpdateMonitoringLog(st, logs) {
@@ -5501,8 +5685,21 @@ function v13ShowPositionCard(position) {
 var v13ApproveBtn = document.getElementById('v13ApproveBtn');
 var v13RejectBtn = document.getElementById('v13RejectBtn');
 var v13ExitBtn = document.getElementById('v13ExitBtn');
+var v13VerifyToggle = document.getElementById('v13VerifyToggle');
 var loadMoreBtn = document.getElementById('loadMoreCandles');
 var loadAllBtn = document.getElementById('loadAllCandles');
+
+if (v13VerifyToggle) v13VerifyToggle.addEventListener('click', function() {
+  var section = document.getElementById('v13VerifySection');
+  var wrap = document.getElementById('v13VerifyBodyWrap');
+  if (section.classList.contains('expanded')) {
+    section.classList.remove('expanded');
+    if (wrap) wrap.style.display = 'none';
+  } else {
+    section.classList.add('expanded');
+    if (wrap) wrap.style.display = 'block';
+  }
+});
 
 if (v13ApproveBtn) v13ApproveBtn.addEventListener('click', function() {
   if (currentSignal) executeSignal(currentSignal);
