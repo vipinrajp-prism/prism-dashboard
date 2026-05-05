@@ -397,6 +397,15 @@ td{padding:7px 8px;color:#cbd5e1;white-space:nowrap;border-bottom:1px solid rgba
 /* Pattern Verification panel */
 .verify-box{padding:12px;border-top:1px solid rgba(255,255,255,0.06)}
 .logic-box{padding:12px;border-top:1px solid rgba(255,255,255,0.06)}
+.logic-main{padding:14px 16px;border-right:1px solid rgba(255,255,255,0.06);overflow-y:auto}
+.logic-main .lg-row{padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.04);display:grid;grid-template-columns:170px 1fr;column-gap:14px;align-items:start}
+.logic-main .lg-label{font-size:11px}
+.logic-main .lg-value{font-size:13px;line-height:1.5}
+.logic-main .lg-pat{font-size:22px}
+.logic-main .lg-pat-name{font-size:14px}
+.logic-main .lg-pat-line{padding-bottom:10px;margin-bottom:10px}
+.logic-main .lg-no-trade-banner{padding:10px 12px;font-size:12px}
+.logic-main .lg-empty{padding:48px 8px;font-size:13px}
 .lg-row{padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.03);display:flex;flex-direction:column;gap:2px}
 .lg-row:last-child{border-bottom:none}
 .lg-label{font-size:10px;color:#64748b;font-weight:700;letter-spacing:0.05em;text-transform:uppercase}
@@ -802,18 +811,11 @@ th.sortable.active .sort-icon{color:#06b6d4}
         </div>
       </div>
       
-      <!-- SCROLL DOWN: Candles + Pivots -->
+      <!-- SCROLL DOWN: Pattern Logic + Right-stack (Pivots / Trade Levels / Verification) -->
       <div class="bottom-data">
-        <div class="candles-box">
-          <div class="section-title">🕯️ CANDLES <span id="candleCount" style="color:#64748b;font-weight:400"></span></div>
-          <table class="candles-table">
-            <thead><tr><th>#</th><th>Time</th><th>O</th><th>H</th><th>L</th><th>C</th></tr></thead>
-            <tbody id="v13CandlesBody"></tbody>
-          </table>
-          <div class="candles-buttons">
-            <button class="load-more-btn" id="loadMoreCandles" style="flex:1">Load 30 More ▼</button>
-            <button class="load-more-btn" id="loadAllCandles" style="flex:1">Load All</button>
-          </div>
+        <div class="logic-main">
+          <div class="section-title">📋 PATTERN LOGIC</div>
+          <div id="v13Logic"><div class="lg-empty">No pattern fired yet</div></div>
         </div>
         <div class="right-stack">
           <div class="pivots-box">
@@ -823,10 +825,6 @@ th.sortable.active .sort-icon{color:#06b6d4}
           <div class="trade-levels-box">
             <div class="section-title">🎯 TRADE LEVELS</div>
             <div id="v13TradeLevels"><div class="tl-empty">No active trade</div></div>
-          </div>
-          <div class="logic-box">
-            <div class="section-title">📋 PATTERN LOGIC</div>
-            <div id="v13Logic"><div class="lg-empty">No pattern fired yet</div></div>
           </div>
           <div class="verify-box" id="v13VerifySection">
             <div class="section-title v13-verify-toggle" id="v13VerifyToggle" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
