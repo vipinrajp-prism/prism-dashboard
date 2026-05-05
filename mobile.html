@@ -134,6 +134,38 @@ body { font-family:'DM Sans',sans-serif; background:#080c14; color:#e2e8f0; min-
 .verify-rule.fail .verify-actual { color:#f87171; }
 .verify-empty { padding:32px; text-align:center; color:#475569; font-size:20px; font-style:italic; }
 .verify-warn { padding:18px 20px; margin:14px 18px 18px; background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.15); border-radius:7px; font-size:20px; color:#f59e0b; line-height:1.5; }
+
+/* Pattern Logic section */
+.logic-section { margin:18px; border-radius:14px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); overflow:hidden; }
+.logic-head { padding:18px; border-bottom:1px solid rgba(255,255,255,0.04); display:flex; flex-direction:column; gap:8px; }
+.logic-title { font-size:22px; font-weight:700; color:#94a3b8; letter-spacing:0.06em; text-transform:uppercase; }
+.logic-pat-line { display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+.logic-pat { font-size:38px; font-weight:800; letter-spacing:-0.02em; font-family:'JetBrains Mono',monospace; }
+.logic-pat-name { font-size:24px; font-weight:700; color:#cbd5e1; }
+.logic-row { padding:18px 20px; border-bottom:1px solid rgba(255,255,255,0.02); display:flex; flex-direction:column; gap:6px; }
+.logic-row:last-child { border-bottom:none; }
+.logic-label { font-size:16px; color:#64748b; font-weight:700; letter-spacing:0.04em; text-transform:uppercase; }
+.logic-value { color:#e2e8f0; font-weight:500; font-size:22px; line-height:1.4; }
+.logic-value.dir-long { color:#22c55e; font-weight:700; }
+.logic-value.dir-short { color:#ef4444; font-weight:700; }
+.logic-value.summary { color:#94a3b8; font-style:italic; font-size:20px; }
+.logic-value.warn { color:#f59e0b; }
+.logic-empty { padding:32px; text-align:center; color:#475569; font-size:20px; font-style:italic; }
+.logic-no-trade-banner { padding:14px 18px; background:rgba(167,139,250,0.08); border:1px solid rgba(167,139,250,0.2); border-radius:7px; margin:14px 18px 4px; color:#a78bfa; font-size:18px; font-weight:600; line-height:1.4; }
+
+/* Verification — collapsed by default */
+.verify-toggle { display:flex; justify-content:space-between; align-items:center; padding:18px; background:rgba(255,255,255,0.02); cursor:pointer; user-select:none; transition:background 0.15s; border-bottom:1px solid rgba(255,255,255,0.04); }
+.verify-toggle:active { background:rgba(255,255,255,0.04); }
+.verify-toggle-left { display:flex; align-items:center; gap:12px; }
+.verify-toggle-title { font-size:19px; font-weight:700; color:#94a3b8; letter-spacing:0.06em; text-transform:uppercase; }
+.verify-toggle-status { display:inline-block; padding:6px 12px; border-radius:6px; font-size:14px; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; }
+.verify-toggle-status.ok { background:rgba(34,197,94,0.14); color:#22c55e; }
+.verify-toggle-status.fail { background:rgba(239,68,68,0.14); color:#ef4444; }
+.verify-toggle-status.partial { background:rgba(245,158,11,0.14); color:#f59e0b; }
+.verify-toggle-arrow { font-size:24px; color:#64748b; transition:transform 0.2s; }
+.verify-section.expanded .verify-toggle-arrow { transform:rotate(180deg); }
+.verify-body-wrap { display:none; }
+.verify-section.expanded .verify-body-wrap { display:block; }
 .footer { text-align:center; padding:20px; font-size:14px; color:#334155; }
 </style>
 </head>
@@ -192,12 +224,24 @@ body { font-family:'DM Sans',sans-serif; background:#080c14; color:#e2e8f0; min-
     <div class="events-title">📋 EVENT LOG</div>
     <div class="events-list" id="eventList"><div class="events-empty">Waiting for session...</div></div>
   </div>
-  <div class="verify-section">
-    <div class="verify-head">
-      <div><span class="verify-title">🧮 Pattern Verification</span></div>
-      <div id="verifySummary"></div>
+  <div class="logic-section">
+    <div class="logic-head">
+      <div><span class="logic-title">📋 Pattern Logic</span></div>
+      <div id="logicPatLine"></div>
     </div>
-    <div id="verifyBody"><div class="verify-empty">No pattern fired yet</div></div>
+    <div id="logicBody"><div class="logic-empty">No pattern fired yet</div></div>
+  </div>
+  <div class="verify-section" id="verifySection">
+    <div class="verify-toggle" id="verifyToggle">
+      <div class="verify-toggle-left">
+        <span class="verify-toggle-title">🧮 Verification</span>
+        <span id="verifySummary"></span>
+      </div>
+      <span class="verify-toggle-arrow">▼</span>
+    </div>
+    <div class="verify-body-wrap">
+      <div id="verifyBody"><div class="verify-empty">No pattern fired yet</div></div>
+    </div>
   </div>
   <div class="footer">Last updated: <span id="lastUpdated">—</span></div>
 </div>
@@ -207,6 +251,113 @@ var KITE_API_KEY="toric63avf1rqsz2";
 var KITE_LOGIN_URL="https://kite.zerodha.com/connect/login?v=3&api_key="+KITE_API_KEY;
 var KEY=null,refreshInterval=null,currentNiftyPrice=null,accessToken=null,kiteUserId=null;
 var PM={SB1:{d:"C1 High Breakout (Outside)"},SB2:{d:"C1 High Breakout (Inside)"},SA1:{d:"Low Break Reversal"},SC1:{d:"Multi-Pivot Breakdown"},SD1:{d:"Above PDH"},SD2:{d:"Below PDH, Above CPR"},SD3:{d:"Inside CPR"},SD4:{d:"Below CPR, Above PDL"},SD5:{d:"Below PDL"},BA1:{d:"Pivot Touch Rejection"},BB1:{d:"PE Reference High"},BC1:{d:"CPR Inside Pullback"},BC2:{d:"Above CPR Top Limit"}};
+
+// PATTERN_LOGIC — verbatim from PRISM15_v1.0_Locked_Pattern_Logic.docx
+var PATTERN_LOGIC = {
+  SB1: { name:"C1 High Breakout (Outside)", dir:"LONG", rows:[
+    ["C1 Prerequisite", "Seller candle AND completely outside CPR (high < cpr_bottom OR low > cpr_top)"],
+    ["Detection Window", "C2 to C4 (SB1_SB2_WINDOW_END)"],
+    ["Trigger Condition", "Candle high > C1 high (strict)"],
+    ["Entry Type", "MARKET"],
+    ["Entry Level", "Trigger candle close"],
+    ["Target / SL", "±50 Nifty points"],
+    ["Bible Filter", "F1 (PDH Breakdown) can block this"],
+  ], summary:"C1 was seller outside CPR, but next 3 candles reverse and break C1 high = failed breakdown = LONG reversal." },
+  SB2: { name:"C1 High Breakout (Inside CPR)", dir:"SHORT", rows:[
+    ["C1 Prerequisite", "Seller candle AND any part inside CPR"],
+    ["Detection Window", "C2–C4 for reference candle; break can be C3 to entry deadline"],
+    ["Step 1 — Reference", "First C2-C4 candle whose high > C1 high becomes reference. Store reference_candle, reference_high."],
+    ["Step 2 — Break", "Any subsequent candle whose high > reference_high fires SB2."],
+    ["Entry Type", "MARKET"],
+    ["Entry Level", "Break candle close"],
+    ["Target / SL", "±50 Nifty points"],
+  ], summary:"C1 seller inside CPR fails — then a subsequent candle fails again after setting a new high. Two failed attempts to rally = SHORT continuation." },
+  SA1: { name:"Low Break Reversal", dir:"LONG", rows:[
+    ["C1 Prerequisite", "Seller candle (any CPR location)"],
+    ["Detection Window", "C3 to C8 (SA1_DETECTION_WINDOW)"],
+    ["Step 1 — Low Break", "On C3-C8: low < prev_running_low (computed from candles array, NOT state.running_low — Bug #44 fix). Stores sa1_low_break_candle, sa1_reference_candle = cn-1, sa1_reference_high."],
+    ["Step 2 — Reversal", "On any subsequent candle up to C8: if high > sa1_reference_high → SA1 fires."],
+    ["Entry Type", "MARKET"],
+    ["Entry Level", "Confirmation candle close"],
+    ["SA1_NO_TRADE", "If C1 close inside CPR, SA1 detected but NO_TRADE (no signal). Does NOT block SD family."],
+    ["Bible Filter", "F1 (PDH Breakdown) can block this"],
+  ], summary:"C1 seller → price breaks lower → fails to continue, instead reverses and breaks above reference candle high = LONG reversal." },
+  SC1: { name:"Multi-Pivot Breakdown", dir:"SHORT", rows:[
+    ["C1 Prerequisite", "Seller candle AND C1 close NOT above CPR Top"],
+    ["Detection Window", "C2 to C20"],
+    ["Entry Allowed From", "C9 (SC1_ENTRY_START)"],
+    ["Invalidation", "If C2 high ≥ C1 high → SC1 permanently invalid (sc1_invalid = true)"],
+    ["Pivot Crossing", "Pivot below C1 high crossed when (a) any candle high reached pivot AND (b) later candle close fell below it. pivotHighSeen prevents recount."],
+    ["Trigger Condition", "≥2 pivot crossings AND at least one candle closed below the lowest pivot crossed"],
+    ["Entry Type", "MARKET"],
+    ["Entry Level", "min(C2 high, lowest pivot crossed)"],
+    ["Target / SL", "±50 Nifty points"],
+  ], summary:"Multiple pivot levels crossed from above = real breakdown momentum. ≥2 crossings rule filters out single-level fakeouts." },
+  SD1: { name:"C2 Entire Above PDH", dir:"SHORT", rows:[
+    ["Match Condition", "C2 low > PDH AND C2 close > PDH (entire C2 above PDH)"],
+    ["Entry Type", "LIMIT"],
+    ["Entry Level", "C1 high − 10"],
+    ["Family", "SD evaluated once at C20. Requires C1 seller, no earlier seller pattern fired (or SA1_NO_TRADE), C2 close < C1 close."],
+  ], summary:"C2 couldn't push higher despite being in buyer territory. Wait for pullback to C1 high area for short entry." },
+  SD2: { name:"C2 Above CPR, Below PDH", dir:"SHORT", rows:[
+    ["Match Condition", "C2 close < PDH AND C2 close > CPR Top"],
+    ["Entry Type", "LIMIT"],
+    ["Entry Level", "C2 high"],
+    ["Family", "SD evaluated once at C20. Requires C1 seller, no earlier seller pattern, C2 close < C1 close."],
+  ], summary:"C2 rejected PDH but held above CPR — short at C2 high expecting failure to re-test PDH." },
+  SD3: { name:"C2 Close Inside CPR", dir:"SHORT", rows:[
+    ["Match Condition", "CPR Bottom ≤ C2 close ≤ CPR Top"],
+    ["Entry Type", "LIMIT"],
+    ["Entry Level", "CPR Top"],
+    ["Family", "SD evaluated once at C20. Requires C1 seller, no earlier seller pattern, C2 close < C1 close."],
+  ], summary:"C2 pulled back into CPR. Wait for pullback to CPR Top to short." },
+  SD4: { name:"C2 Below CPR, Above PDL", dir:"SHORT", rows:[
+    ["Match Condition", "C2 close < CPR Bottom AND C2 close > PDL"],
+    ["Entry Type", "LIMIT"],
+    ["Entry Level", "CPR Bottom"],
+    ["Family", "SD evaluated once at C20. Requires C1 seller, no earlier seller pattern, C2 close < C1 close."],
+  ], summary:"C2 broke below CPR. CPR Bottom now resistance — wait for pullback to short." },
+  SD5: { name:"C2 Close at or Below PDL", dir:"SHORT", rows:[
+    ["Match Condition", "C2 close ≤ PDL"],
+    ["Entry Type", "LIMIT"],
+    ["Entry Level", "If C1 crossed pivots: min(Day High − 10, highest pivot crossed − 10). Else: Day High − 10."],
+    ["Known Weakness", "Extreme gap-down days (e.g., April 2, 2026: −500pt gap), entry often unreachable."],
+  ], summary:"Extreme breakdown. C2 already below PDL. Entry pulls back to Day High or highest pivot C1 crossed." },
+  BA1: { name:"Pivot Touch Rejection", dir:"SHORT", rows:[
+    ["C1 Prerequisite", "Buyer candle AND completely outside CPR"],
+    ["Detection Window", "C1 to C20"],
+    ["Scenario 1 — Below Pivot", "Candle high < pivot AND high within (pivot − 10) range. If close in (pivot−10..pivot) → IMMEDIATE SHORT. Else wait for re-entry."],
+    ["Scenario 2 — Crossing Pivot", "Candle high ≥ pivot AND low < pivot. If close ≤ pivot+10 → IMMEDIATE SHORT."],
+    ["Entry Type", "MARKET"],
+    ["Bible Filter", "F3 (Above PDH) can block this"],
+  ], summary:"Buyer C1 outside CPR → rally hits pivot resistance → rejection. Either immediate or delayed (re-entry)." },
+  BB1: { name:"PE Reference High", dir:"SHORT", rows:[
+    ["C1 Prerequisite", "Buyer candle AND completely outside CPR"],
+    ["Detection Window", "C2 to C40 (9:25 AM hard deadline)"],
+    ["C2 Init", "bb1_running_low = C2 low; bb1_limit_level = running_low + 50"],
+    ["C3+ Update", "If current low < running_low → update + recalc limit_level"],
+    ["Fill Condition", "Current candle high ≥ limit_level → SHORT LIMIT entry at limit_level"],
+    ["9:25 Hard Check", "If unfilled at C40 and close ≥ running_low + 25 → SHORT MARKET. Else BB1_SKIP."],
+    ["Entry Type", "LIMIT (primary) or MARKET (9:25 hard entry)"],
+    ["Bible Filter", "F3 (Above PDH) can block this"],
+  ], summary:"Track session low after buyer C1. Short on bounce 50pts above running low. 9:25 deadline: 25pt bounce = take, else skip." },
+  BC1: { name:"CPR Inside Pullback", dir:"LONG", rows:[
+    ["C1 Prerequisite", "Buyer AND any part of C1 inside CPR AND C1 close > PP AND C1 close < CPR Top"],
+    ["Detection Window", "C9 to C20 (strict 9:20 AM deadline)"],
+    ["Entry Condition", "Current candle close ≤ CPR Top + 5 (BC1_CPR_BUFFER)"],
+    ["Entry Type", "MARKET"],
+    ["Entry Level", "Current candle close"],
+    ["Deadline Rationale", "C20 is stricter than global C60. BC1 setups invalidate quickly."],
+  ], summary:"C1 closed above PP but below CPR Top — indecisive bullish. Wait for pullback into CPR Top area for LONG continuation." },
+  BC2: { name:"Above CPR Top", dir:"LONG", rows:[
+    ["C1 Prerequisite", "Buyer AND any part of C1 inside CPR AND C1 close > CPR Top"],
+    ["Detection Window", "Fires on first eligible candle (typically C2)"],
+    ["Entry Condition", "None — fires immediately when prerequisites met"],
+    ["Entry Type", "MARKET"],
+    ["Entry Level", "C1 close"],
+    ["Note", "BC2 locks the session immediately, preventing BC1 from firing same day."],
+  ], summary:"C1 started inside CPR and closed above CPR Top = confirmed breakout. Enter LONG immediately at C1 close." },
+};
 function vfNum(n){return n!=null?(+n).toFixed(2):"?"}
 var PATTERN_RULES={
   BC1:[
@@ -291,7 +442,7 @@ var PATTERN_RULES={
   ]
 };
 function connect(){var k=document.getElementById("keyInput").value.trim();if(!k){alert("Enter key");return}KEY=k;localStorage.setItem("prism_key",k);document.getElementById("connectScreen").style.display="none";document.getElementById("mainContent").classList.add("show");checkKiteToken();fetchData();refreshInterval=setInterval(fetchData,3000);setLive("live")}
-document.addEventListener("DOMContentLoaded",function(){var s=localStorage.getItem("prism_key");if(s)document.getElementById("keyInput").value=s;var p=new URLSearchParams(window.location.search);if(p.has("kite_success")){window.history.replaceState({},"",window.location.pathname);if(s)setTimeout(connect,100)}if(p.has("kite_error")){window.history.replaceState({},"",window.location.pathname);alert("Kite login failed: "+p.get("kite_error"))}});
+document.addEventListener("DOMContentLoaded",function(){var s=localStorage.getItem("prism_key");if(s)document.getElementById("keyInput").value=s;var p=new URLSearchParams(window.location.search);if(p.has("kite_success")){window.history.replaceState({},"",window.location.pathname);if(s)setTimeout(connect,100)}if(p.has("kite_error")){window.history.replaceState({},"",window.location.pathname);alert("Kite login failed: "+p.get("kite_error"))}var vt=document.getElementById("verifyToggle");if(vt)vt.addEventListener("click",function(){document.getElementById("verifySection").classList.toggle("expanded")})});
 function manualRefresh(){if(KEY)fetchData()}
 async function Q(t,q){var r=await fetch(SUPABASE_URL+"/rest/v1/"+t+"?"+q,{headers:{"apikey":KEY,"Authorization":"Bearer "+KEY}});return r.json()}
 async function checkKiteToken(){if(!KEY)return;var d=new Date(),ist=new Date(d.getTime()+(5.5*60*60*1000)),ds=ist.toISOString().split("T")[0];try{var t=await Q("kite_auth","select=*&token_date=eq."+ds);if(t.length>0){accessToken=t[0].access_token;kiteUserId=t[0].user_id;updateKiteUI(true)}else{updateKiteUI(false)}}catch(e){updateKiteUI(false)}}
@@ -299,7 +450,7 @@ function handleKite(){if(accessToken){accessToken=null;kiteUserId=null;updateKit
 function updateKiteUI(on){var d=document.getElementById("kiteDot"),s=document.getElementById("kiteStatus"),b=document.getElementById("kiteBtn");if(on){d.classList.add("on");s.textContent="Kite: "+kiteUserId;b.textContent="Logout";b.className="kite-btn logout"}else{d.classList.remove("on");s.textContent="Kite: Not connected";b.textContent="Login to Kite";b.className="kite-btn login"}}
 function setLive(status){var b=document.getElementById("liveBadge"),t=document.getElementById("liveText");if(status==="live"){b.className="live-badge on";t.textContent="LIVE"}else if(status==="completed"){b.className="live-badge off";t.textContent="COMPLETED"}else{b.className="live-badge off";t.textContent="OFFLINE"}}
 function F(v){return v!=null?Number(v).toFixed(2):"—"}
-async function fetchData(){if(!KEY)return;try{var d=new Date(),ist=new Date(d.getTime()+(5.5*60*60*1000)),ds=ist.toISOString().split("T")[0];var sessions=await Q("sessions","select=*&trade_date=eq."+ds+"&limit=1");if(!sessions||!sessions.length){showWaiting("No session — waiting for 9:15 AM");setLive("off");renderPatterns(null);renderEvents(null);renderVerification(null,null,null,null);return}var session=sessions[0],sid=session.id;setLive(session.status==="scanning"||session.status==="active"?"live":session.status==="completed"?"completed":"off");var r=await Promise.all([Q("session_state","select=*&session_id=eq."+sid+"&limit=1"),Q("candles","select=close&session_id=eq."+sid+"&order=candle_number.desc&limit=1"),Q("signals","select=*&session_id=eq."+sid+"&order=created_at.desc&limit=1"),Q("positions","select=*&session_id=eq."+sid+"&order=created_at.desc&limit=1"),Q("settings","select=lot_size&limit=1"),Q("pivot_levels","select=*&session_id=eq."+sid+"&limit=1"),Q("engine_logs","select=*&session_id=eq."+sid+"&level=neq.debug&order=created_at.desc&limit=50")]);var state=r[0][0]||null,lc=r[1][0]||null,signal=r[2][0]||null,pos=r[3][0]||null,settings=r[4][0]||null,pivots=r[5][0]||null,logs=r[6]||[];if(lc)currentNiftyPrice=lc.close;var sym=(state&&state.trading_symbol)?state.trading_symbol:"NIFTY26APRFUT";var lots=(settings&&settings.lot_size)?settings.lot_size:1;document.getElementById("tradeHeader").textContent=sym+" | MIS | "+lots+" lot ("+(lots*65)+" qty)";if(pos&&pos.status==="open"){showPosition(pos,state)}else if(pos&&pos.status==="closed"){showResult(pos)}else if(signal&&(signal.status==="pending"||signal.status==="executing")&&state&&!state.trade_taken&&state.pending_limit_entry_level){showLimitPending(signal,state)}else if(signal&&signal.status==="executing"&&state&&!state.trade_taken&&!state.pending_limit_entry_level){showWaiting(session.status==="completed"?"Session completed — limit expired, no trade":"Limit expired — no entry")}else if(signal&&signal.status==="pending"){showSignal(signal)}else if(state&&state.pending_limit_entry_level){showLimitPending(signal,state)}else if(state){var cn=state.candles_processed||0;showWaiting(session.status==="completed"?"Session completed — no trade":"Scanning... C"+cn+"/180")}else{showWaiting("Waiting for first candle (9:15 AM)")}renderPatterns(state);renderEvents(logs);renderVerification(state,signal,pos,pivots);document.getElementById("lastUpdated").textContent=new Date().toLocaleTimeString("en-IN",{hour12:false})}catch(e){console.error(e)}}
+async function fetchData(){if(!KEY)return;try{var d=new Date(),ist=new Date(d.getTime()+(5.5*60*60*1000)),ds=ist.toISOString().split("T")[0];var sessions=await Q("sessions","select=*&trade_date=eq."+ds+"&limit=1");if(!sessions||!sessions.length){showWaiting("No session — waiting for 9:15 AM");setLive("off");renderPatterns(null);renderEvents(null);renderLogic(null,null,null);renderVerification(null,null,null,null);return}var session=sessions[0],sid=session.id;setLive(session.status==="scanning"||session.status==="active"?"live":session.status==="completed"?"completed":"off");var r=await Promise.all([Q("session_state","select=*&session_id=eq."+sid+"&limit=1"),Q("candles","select=close&session_id=eq."+sid+"&order=candle_number.desc&limit=1"),Q("signals","select=*&session_id=eq."+sid+"&order=created_at.desc&limit=1"),Q("positions","select=*&session_id=eq."+sid+"&order=created_at.desc&limit=1"),Q("settings","select=lot_size&limit=1"),Q("pivot_levels","select=*&session_id=eq."+sid+"&limit=1"),Q("engine_logs","select=*&session_id=eq."+sid+"&level=neq.debug&order=created_at.desc&limit=50")]);var state=r[0][0]||null,lc=r[1][0]||null,signal=r[2][0]||null,pos=r[3][0]||null,settings=r[4][0]||null,pivots=r[5][0]||null,logs=r[6]||[];if(lc)currentNiftyPrice=lc.close;var sym=(state&&state.trading_symbol)?state.trading_symbol:"NIFTY26APRFUT";var lots=(settings&&settings.lot_size)?settings.lot_size:1;document.getElementById("tradeHeader").textContent=sym+" | MIS | "+lots+" lot ("+(lots*65)+" qty)";if(pos&&pos.status==="open"){showPosition(pos,state)}else if(pos&&pos.status==="closed"){showResult(pos)}else if(signal&&(signal.status==="pending"||signal.status==="executing")&&state&&!state.trade_taken&&state.pending_limit_entry_level){showLimitPending(signal,state)}else if(signal&&signal.status==="executing"&&state&&!state.trade_taken&&!state.pending_limit_entry_level){showWaiting(session.status==="completed"?"Session completed — limit expired, no trade":"Limit expired — no entry")}else if(signal&&signal.status==="pending"){showSignal(signal)}else if(state&&state.pending_limit_entry_level){showLimitPending(signal,state)}else if(state){var cn=state.candles_processed||0;showWaiting(session.status==="completed"?"Session completed — no trade":"Scanning... C"+cn+"/180")}else{showWaiting("Waiting for first candle (9:15 AM)")}renderPatterns(state);renderEvents(logs);renderLogic(state,signal,pos);renderVerification(state,signal,pos,pivots);document.getElementById("lastUpdated").textContent=new Date().toLocaleTimeString("en-IN",{hour12:false})}catch(e){console.error(e)}}
 function hideAll(){document.getElementById("tradeWaiting").style.display="none";document.getElementById("signalCard").className="signal-card";document.getElementById("positionCard").className="position-card";document.getElementById("tradeResult").className="trade-result"}
 function showWaiting(t){hideAll();document.getElementById("tradeWaiting").style.display="block";document.getElementById("tradeWaiting").querySelector(".trade-waiting-text").textContent=t}
 function showSignal(sig){hideAll();document.getElementById("signalCard").className="signal-card show";document.getElementById("sigPattern").textContent=sig.pattern;var d=sig.direction||"—",de=document.getElementById("sigDir");de.textContent=d;de.className="signal-dir "+d.toLowerCase();var se=document.getElementById("sigStatus");se.textContent=sig.status==="pending"?"⏳ Pending approval":"⚡ Auto-executing...";se.className="signal-status "+(sig.status==="pending"?"pending":"executed");document.getElementById("sigEntry").textContent=F(sig.entry_level);document.getElementById("sigTarget").textContent=F(sig.target_level);document.getElementById("sigSL").textContent=F(sig.sl_level)}
@@ -323,6 +474,32 @@ function renderEvents(logs){
 
 function vfPatternKey(p){return(p||"").replace("_NO_TRADE","")}
 
+function renderLogic(state,signal,position){
+  var patLineEl=document.getElementById("logicPatLine");
+  var bodyEl=document.getElementById("logicBody");
+  var pat=null,isNT=false;
+  if(position&&(position.status==="closed"||position.status==="open")){pat=(signal&&signal.pattern)||position.pattern}
+  else if(signal){pat=signal.pattern}
+  else if(state){pat=state.active_pattern||state.seller_pattern_fired||state.buyer_pattern_fired}
+  if(!pat){bodyEl.innerHTML='<div class="logic-empty">No pattern fired yet</div>';patLineEl.innerHTML="";return}
+  if(pat&&pat.indexOf("NO_TRADE")!==-1)isNT=true;
+  var key=vfPatternKey(pat);
+  var spec=PATTERN_LOGIC[key];
+  if(!spec){bodyEl.innerHTML='<div class="logic-empty">Logic for <b>'+key+'</b> not yet documented</div>';patLineEl.innerHTML='<span class="logic-pat p-'+key.toLowerCase()+'">'+key+'</span>';return}
+  patLineEl.innerHTML='<div class="logic-pat-line"><span class="logic-pat p-'+key.toLowerCase()+'">'+key+'</span><span class="logic-pat-name">'+spec.name+'</span></div>';
+  var html="";
+  if(isNT){html+='<div class="logic-no-trade-banner">⚡ Detected as <b>'+pat+'</b> — pattern logic recognized but execution skipped (see SA1_NO_TRADE rule below)</div>'}
+  html+='<div class="logic-row"><div class="logic-label">Trade Direction</div><div class="logic-value dir-'+spec.dir.toLowerCase()+'">'+spec.dir+'</div></div>';
+  spec.rows.forEach(function(r){
+    var v=r[1];
+    var cls="logic-value";
+    if(r[0].indexOf("Bible")!==-1||r[0].indexOf("Weakness")!==-1||r[0].indexOf("NO_TRADE")!==-1)cls="logic-value warn";
+    html+='<div class="logic-row"><div class="logic-label">'+r[0]+'</div><div class="'+cls+'">'+v+'</div></div>';
+  });
+  if(spec.summary){html+='<div class="logic-row"><div class="logic-label">Logic Summary</div><div class="logic-value summary">'+spec.summary+'</div></div>'}
+  bodyEl.innerHTML=html;
+}
+
 function renderVerification(state,signal,position,pivots){
   var body=document.getElementById("verifyBody");
   var sumEl=document.getElementById("verifySummary");
@@ -333,7 +510,7 @@ function renderVerification(state,signal,position,pivots){
   if(!pat){body.innerHTML='<div class="verify-empty">No pattern fired yet</div>';sumEl.innerHTML='';return}
   var key=vfPatternKey(pat);
   var rules=PATTERN_RULES[key];
-  if(!rules){body.innerHTML='<div class="verify-empty">Verification rules for <b>'+key+'</b> not yet defined</div>';sumEl.innerHTML='<span class="verify-pat p-'+key.toLowerCase()+'">'+key+'</span>';return}
+  if(!rules){body.innerHTML='<div class="verify-empty">Verification rules for <b>'+key+'</b> not yet defined</div>';sumEl.innerHTML="";return}
   var passed=0,failed=0,unknown=0;
   var rulesHtml="";
   rules.forEach(function(r){
@@ -350,11 +527,11 @@ function renderVerification(state,signal,position,pivots){
     '</div>';
   });
   var sumCls,sumLbl;
-  if(failed>0){sumCls="fail";sumLbl="RULE VIOLATION"}
+  if(failed>0){sumCls="fail";sumLbl="VIOLATION"}
   else if(unknown>0&&passed===0){sumCls="partial";sumLbl="INCOMPLETE"}
-  else if(unknown>0){sumCls="partial";sumLbl=passed+"/"+rules.length+" VERIFIED"}
-  else{sumCls="ok";sumLbl="EXECUTION VALID"}
-  sumEl.innerHTML='<span class="verify-pat p-'+key.toLowerCase()+'" style="margin-right:8px">'+key+'</span><span class="verify-summary '+sumCls+'">'+sumLbl+'</span>';
+  else if(unknown>0){sumCls="partial";sumLbl=passed+"/"+rules.length}
+  else{sumCls="ok";sumLbl="VALID"}
+  sumEl.innerHTML='<span class="verify-toggle-status '+sumCls+'">'+sumLbl+'</span>';
   if(failed>0){rulesHtml+='<div class="verify-warn">⚠ Engine fired this pattern but '+failed+' rule(s) failed verification. Possible bug — investigate.</div>'}
   body.innerHTML=rulesHtml;
 }
