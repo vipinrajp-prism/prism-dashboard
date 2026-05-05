@@ -95,6 +95,43 @@ body { font-family:'DM Sans',sans-serif; background:#080c14; color:#e2e8f0; min-
 .ps { color:#f472b6; }
 .pd { color:#ec4899; }
 .pb2 { color:#38bdf8; }
+/* Pattern colors — match desktop */
+.p-bc1{color:#22c55e}.p-bc2{color:#10b981}.p-ba1{color:#06b6d4}.p-bb1{color:#a78bfa}
+.p-sc1{color:#a855f7}.p-sb1{color:#22c55e}.p-sb2{color:#f97316}.p-sa1{color:#fbbf24}
+.p-sd1{color:#ef4444}.p-sd2{color:#f87171}.p-sd3{color:#fb7185}.p-sd4{color:#ec4899}.p-sd5{color:#d946ef}
+/* Event Log section */
+.events-section { margin:12px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); overflow:hidden; }
+.events-title { padding:10px 14px; font-size:11px; font-weight:700; color:#94a3b8; letter-spacing:0.06em; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.04); }
+.events-list { max-height:340px; overflow-y:auto; }
+.log-item { display:flex; gap:10px; padding:8px 14px; border-bottom:1px solid rgba(255,255,255,0.02); align-items:flex-start; font-size:11px; line-height:1.45; }
+.log-item:last-child { border-bottom:none; }
+.log-time { color:#475569; font-family:'JetBrains Mono',monospace; font-size:10px; flex-shrink:0; padding-top:1px; min-width:62px; }
+.log-msg { color:#94a3b8; word-break:break-word; flex:1; }
+.log-msg.info { color:#06b6d4; }
+.log-msg.highlight { color:#f59e0b; }
+.log-msg.error { color:#ef4444; }
+.events-empty { padding:18px; text-align:center; color:#475569; font-size:11px; font-style:italic; }
+/* Pattern Verification section */
+.verify-section { margin:12px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); overflow:hidden; }
+.verify-head { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; border-bottom:1px solid rgba(255,255,255,0.04); flex-wrap:wrap; gap:8px; }
+.verify-title { font-size:11px; font-weight:700; color:#94a3b8; letter-spacing:0.06em; text-transform:uppercase; }
+.verify-pat { font-size:14px; font-weight:800; letter-spacing:0.02em; font-family:'JetBrains Mono',monospace; }
+.verify-summary { display:inline-block; padding:3px 10px; border-radius:4px; font-size:10px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; }
+.verify-summary.ok { background:rgba(34,197,94,0.14); color:#22c55e; border:1px solid rgba(34,197,94,0.25); }
+.verify-summary.fail { background:rgba(239,68,68,0.14); color:#ef4444; border:1px solid rgba(239,68,68,0.25); }
+.verify-summary.partial { background:rgba(245,158,11,0.14); color:#f59e0b; border:1px solid rgba(245,158,11,0.25); }
+.verify-rule { padding:9px 14px; font-size:11px; border-bottom:1px dashed rgba(255,255,255,0.03); display:grid; grid-template-columns:18px 1fr; column-gap:8px; align-items:start; }
+.verify-rule:last-child { border-bottom:none; }
+.verify-icon { font-weight:700; font-family:'JetBrains Mono',monospace; text-align:center; line-height:1.4; }
+.verify-rule.pass .verify-icon { color:#22c55e; }
+.verify-rule.fail .verify-icon { color:#ef4444; }
+.verify-rule.unk .verify-icon { color:#64748b; }
+.verify-desc { color:#cbd5e1; font-weight:600; line-height:1.4; }
+.verify-actual { color:#64748b; font-size:10px; font-family:'JetBrains Mono',monospace; margin-top:2px; word-break:break-word; }
+.verify-rule.pass .verify-actual { color:#94a3b8; }
+.verify-rule.fail .verify-actual { color:#f87171; }
+.verify-empty { padding:18px; text-align:center; color:#475569; font-size:11px; font-style:italic; }
+.verify-warn { padding:8px 12px; margin:8px 14px 12px; background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.15); border-radius:4px; font-size:10px; color:#f59e0b; line-height:1.4; }
 .footer { text-align:center; padding:12px; font-size:10px; color:#334155; }
 </style>
 </head>
@@ -149,6 +186,17 @@ body { font-family:'DM Sans',sans-serif; background:#080c14; color:#e2e8f0; min-
     <div class="patterns-title" id="patternsTitle">PATTERNS</div>
     <div id="patternList"></div>
   </div>
+  <div class="events-section">
+    <div class="events-title">📋 EVENT LOG</div>
+    <div class="events-list" id="eventList"><div class="events-empty">Waiting for session...</div></div>
+  </div>
+  <div class="verify-section">
+    <div class="verify-head">
+      <div><span class="verify-title">🧮 Pattern Verification</span></div>
+      <div id="verifySummary"></div>
+    </div>
+    <div id="verifyBody"><div class="verify-empty">No pattern fired yet</div></div>
+  </div>
   <div class="footer">Last updated: <span id="lastUpdated">—</span></div>
 </div>
 <script>
@@ -157,6 +205,87 @@ var KITE_API_KEY="toric63avf1rqsz2";
 var KITE_LOGIN_URL="https://kite.zerodha.com/connect/login?v=3&api_key="+KITE_API_KEY;
 var KEY=null,refreshInterval=null,currentNiftyPrice=null,accessToken=null,kiteUserId=null;
 var PM={SB1:{d:"C1 High Breakout (Outside)"},SB2:{d:"C1 High Breakout (Inside)"},SA1:{d:"Low Break Reversal"},SC1:{d:"Multi-Pivot Breakdown"},SD1:{d:"Above PDH"},SD2:{d:"Below PDH, Above CPR"},SD3:{d:"Inside CPR"},SD4:{d:"Below CPR, Above PDL"},SD5:{d:"Below PDL"},BA1:{d:"Pivot Touch Rejection"},BB1:{d:"PE Reference High"},BC1:{d:"CPR Inside Pullback"},BC2:{d:"Above CPR Top Limit"}};
+function vfNum(n){return n!=null?(+n).toFixed(2):"?"}
+var PATTERN_RULES={
+  BC1:[
+    {d:"C1 is buyer (close > open)",e:function(s){if(s.c1_close==null||s.c1_open==null)return{ok:null,actual:"C1 OHLC missing"};return{ok:s.c1_type==="buyer"&&s.c1_close>s.c1_open,actual:"close "+vfNum(s.c1_close)+" vs open "+vfNum(s.c1_open)}}},
+    {d:"Any part of C1 inside CPR",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};var i=(s.c1_high<=pv.cpr_top&&s.c1_high>=pv.cpr_bottom)||(s.c1_low<=pv.cpr_top&&s.c1_low>=pv.cpr_bottom)||(s.c1_high>pv.cpr_top&&s.c1_low<pv.cpr_bottom);return{ok:i,actual:"C1 ["+vfNum(s.c1_low)+"–"+vfNum(s.c1_high)+"] vs CPR ["+vfNum(pv.cpr_bottom)+"–"+vfNum(pv.cpr_top)+"]"}}},
+    {d:"C1 close > PP",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};return{ok:s.c1_close>pv.pp,actual:vfNum(s.c1_close)+" > PP "+vfNum(pv.pp)}}},
+    {d:"C1 close < CPR Top",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};return{ok:s.c1_close<pv.cpr_top,actual:vfNum(s.c1_close)+" < CPR Top "+vfNum(pv.cpr_top)}}},
+    {d:"Trigger candle in C9–C20 window",e:function(s,sg){var c=sg?sg.trigger_candle:null;if(c==null)return{ok:null,actual:"no trigger candle"};return{ok:c>=9&&c<=20,actual:"fired @ C"+c+" (window C9–C20)"}}},
+    {d:"Entry close ≤ CPR Top + 5",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};var e=sg?sg.entry_level:null;if(e==null)return{ok:null,actual:"entry missing"};return{ok:+e<=pv.cpr_top+5,actual:vfNum(e)+" ≤ "+vfNum(pv.cpr_top+5)+" (CPR Top + 5)"}}}
+  ],
+  BC2:[
+    {d:"C1 is buyer",e:function(s){return{ok:s.c1_type==="buyer"&&s.c1_close>s.c1_open,actual:"close "+vfNum(s.c1_close)+" vs open "+vfNum(s.c1_open)}}},
+    {d:"Any part of C1 inside CPR",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};var i=(s.c1_high<=pv.cpr_top&&s.c1_high>=pv.cpr_bottom)||(s.c1_low<=pv.cpr_top&&s.c1_low>=pv.cpr_bottom)||(s.c1_high>pv.cpr_top&&s.c1_low<pv.cpr_bottom);return{ok:i,actual:"C1 ["+vfNum(s.c1_low)+"–"+vfNum(s.c1_high)+"] vs CPR ["+vfNum(pv.cpr_bottom)+"–"+vfNum(pv.cpr_top)+"]"}}},
+    {d:"C1 close > CPR Top",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};return{ok:s.c1_close>pv.cpr_top,actual:vfNum(s.c1_close)+" > CPR Top "+vfNum(pv.cpr_top)}}},
+    {d:"Triggers at C2 (first eligible candle after C1)",e:function(s,sg){var c=sg?sg.trigger_candle:null;return{ok:c===2,actual:"trigger @ C"+(c||"?")+" (expected C2)"}}}
+  ],
+  BA1:[
+    {d:"C1 is buyer",e:function(s){return{ok:s.c1_type==="buyer",actual:"C1 type: "+(s.c1_type||"?")}}},
+    {d:"C1 completely outside CPR",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};var o=(s.c1_low>pv.cpr_top)||(s.c1_high<pv.cpr_bottom);return{ok:o,actual:"C1 ["+vfNum(s.c1_low)+"–"+vfNum(s.c1_high)+"] vs CPR ["+vfNum(pv.cpr_bottom)+"–"+vfNum(pv.cpr_top)+"]"}}},
+    {d:"Pivot touched and rejected",e:function(s){return{ok:!!s.ba1_confirmed||s.ba1_pivot_touched!=null,actual:"pivot touched: "+(s.ba1_pivot_touched||"—")}}},
+    {d:"Direction: SHORT",e:function(s,sg){return{ok:!sg||sg.direction==="SHORT",actual:"dir: "+(sg?sg.direction:"?")}}}
+  ],
+  BB1:[
+    {d:"C1 is buyer",e:function(s){return{ok:s.c1_type==="buyer",actual:"C1 type: "+(s.c1_type||"?")}}},
+    {d:"C1 completely outside CPR",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};var o=(s.c1_low>pv.cpr_top)||(s.c1_high<pv.cpr_bottom);return{ok:o,actual:"C1 ["+vfNum(s.c1_low)+"–"+vfNum(s.c1_high)+"] vs CPR ["+vfNum(pv.cpr_bottom)+"–"+vfNum(pv.cpr_top)+"]"}}},
+    {d:"Reference high tracked, broken down",e:function(s){return{ok:!!s.bb1_confirmed,actual:"running_low: "+vfNum(s.bb1_running_low)}}},
+    {d:"Trigger ≤ C40 (9:25 AM deadline)",e:function(s,sg){var c=sg?sg.trigger_candle:null;return{ok:c!=null&&c<=40,actual:"fired @ C"+(c||"?")+" (deadline C40)"}}},
+    {d:"Direction: SHORT",e:function(s,sg){return{ok:!sg||sg.direction==="SHORT",actual:"dir: "+(sg?sg.direction:"?")}}}
+  ],
+  SB1:[
+    {d:"C1 is seller",e:function(s){return{ok:s.c1_type==="seller",actual:"C1 type: "+(s.c1_type||"?")}}},
+    {d:"C1 outside CPR",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};var o=(s.c1_low>pv.cpr_top)||(s.c1_high<pv.cpr_bottom);return{ok:o,actual:"C1 ["+vfNum(s.c1_low)+"–"+vfNum(s.c1_high)+"] vs CPR ["+vfNum(pv.cpr_bottom)+"–"+vfNum(pv.cpr_top)+"]"}}},
+    {d:"C1 high broken (close above C1 high)",e:function(s){return{ok:!!s.sb1_confirmed,actual:"C1 high: "+vfNum(s.c1_high)}}},
+    {d:"Direction: LONG (reversal)",e:function(s,sg){return{ok:!sg||sg.direction==="LONG",actual:"dir: "+(sg?sg.direction:"?")}}}
+  ],
+  SB2:[
+    {d:"C1 is seller",e:function(s){return{ok:s.c1_type==="seller",actual:"C1 type: "+(s.c1_type||"?")}}},
+    {d:"C1 inside CPR (any part)",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};var i=(s.c1_high<=pv.cpr_top&&s.c1_high>=pv.cpr_bottom)||(s.c1_low<=pv.cpr_top&&s.c1_low>=pv.cpr_bottom)||(s.c1_high>pv.cpr_top&&s.c1_low<pv.cpr_bottom);return{ok:i,actual:"C1 ["+vfNum(s.c1_low)+"–"+vfNum(s.c1_high)+"] vs CPR ["+vfNum(pv.cpr_bottom)+"–"+vfNum(pv.cpr_top)+"]"}}},
+    {d:"Reference candle high broken",e:function(s){return{ok:!!s.sb2_confirmed,actual:"ref candle: C"+(s.sb2_reference_candle||"?")}}},
+    {d:"Direction: SHORT",e:function(s,sg){return{ok:!sg||sg.direction==="SHORT",actual:"dir: "+(sg?sg.direction:"?")}}}
+  ],
+  SA1:[
+    {d:"C1 is seller",e:function(s){return{ok:s.c1_type==="seller",actual:"C1 type: "+(s.c1_type||"?")}}},
+    {d:"C1 low broken downward",e:function(s){return{ok:s.sa1_low_break_candle!=null,actual:"low break @ C"+(s.sa1_low_break_candle||"?")}}},
+    {d:"Reversal confirmed",e:function(s){return{ok:!!s.sa1_confirmed,actual:"C1 low: "+vfNum(s.c1_low)}}},
+    {d:"Direction: LONG",e:function(s,sg){return{ok:!sg||sg.direction==="LONG",actual:"dir: "+(sg?sg.direction:"?")}}}
+  ],
+  SC1:[
+    {d:"C1 is seller",e:function(s){return{ok:s.c1_type==="seller",actual:"C1 type: "+(s.c1_type||"?")}}},
+    {d:"Multi-pivot breakdown (≥1 pivot crossed)",e:function(s){return{ok:(s.sc1_pivots_crossed||0)>=1,actual:(s.sc1_pivots_crossed||0)+" pivot(s) crossed"}}},
+    {d:"SC1 confirmed",e:function(s){return{ok:!!s.sc1_confirmed,actual:s.sc1_confirmed?"confirmed":"pending"}}},
+    {d:"Direction: SHORT",e:function(s,sg){return{ok:!sg||sg.direction==="SHORT",actual:"dir: "+(sg?sg.direction:"?")}}}
+  ],
+  SD1:[
+    {d:"C1 is seller",e:function(s){return{ok:s.c1_type==="seller",actual:"C1 type: "+(s.c1_type||"?")}}},
+    {d:"C1 close above PDH",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};return{ok:s.c1_close>pv.pdh,actual:vfNum(s.c1_close)+" > PDH "+vfNum(pv.pdh)}}},
+    {d:"No earlier seller pattern fired",e:function(s){var f=s.seller_pattern_fired;return{ok:!f||f==="SD1"||f==="SA1_NO_TRADE",actual:"prior fire: "+(f||"none")}}},
+    {d:"Direction: SHORT",e:function(s,sg){return{ok:!sg||sg.direction==="SHORT",actual:"dir: "+(sg?sg.direction:"?")}}}
+  ],
+  SD2:[
+    {d:"C1 is seller",e:function(s){return{ok:s.c1_type==="seller",actual:"C1 type: "+(s.c1_type||"?")}}},
+    {d:"C1 close: below PDH, above CPR",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};var o=s.c1_close<pv.pdh&&s.c1_close>pv.cpr_top;return{ok:o,actual:vfNum(s.c1_close)+" (CPR "+vfNum(pv.cpr_top)+", PDH "+vfNum(pv.pdh)+")"}}},
+    {d:"Direction: SHORT",e:function(s,sg){return{ok:!sg||sg.direction==="SHORT",actual:"dir: "+(sg?sg.direction:"?")}}}
+  ],
+  SD3:[
+    {d:"C1 is seller",e:function(s){return{ok:s.c1_type==="seller",actual:"C1 type: "+(s.c1_type||"?")}}},
+    {d:"C1 close inside CPR",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};var i=s.c1_close>=pv.cpr_bottom&&s.c1_close<=pv.cpr_top;return{ok:i,actual:vfNum(s.c1_close)+" in CPR ["+vfNum(pv.cpr_bottom)+"–"+vfNum(pv.cpr_top)+"]"}}},
+    {d:"Direction: SHORT",e:function(s,sg){return{ok:!sg||sg.direction==="SHORT",actual:"dir: "+(sg?sg.direction:"?")}}}
+  ],
+  SD4:[
+    {d:"C1 is seller",e:function(s){return{ok:s.c1_type==="seller",actual:"C1 type: "+(s.c1_type||"?")}}},
+    {d:"C1 close: below CPR, above PDL",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};var o=s.c1_close<pv.cpr_bottom&&s.c1_close>pv.pdl;return{ok:o,actual:vfNum(s.c1_close)+" (PDL "+vfNum(pv.pdl)+", CPR Bot "+vfNum(pv.cpr_bottom)+")"}}},
+    {d:"Direction: SHORT",e:function(s,sg){return{ok:!sg||sg.direction==="SHORT",actual:"dir: "+(sg?sg.direction:"?")}}}
+  ],
+  SD5:[
+    {d:"C1 is seller",e:function(s){return{ok:s.c1_type==="seller",actual:"C1 type: "+(s.c1_type||"?")}}},
+    {d:"C1 close below PDL",e:function(s,sg,p,pv){if(!pv)return{ok:null,actual:"pivots missing"};return{ok:s.c1_close<pv.pdl,actual:vfNum(s.c1_close)+" < PDL "+vfNum(pv.pdl)}}},
+    {d:"Fires only at C20 (deadline pattern)",e:function(s,sg){var c=sg?sg.trigger_candle:null;return{ok:c===20,actual:"fired @ C"+(c||"?")+" (must be C20)"}}},
+    {d:"Direction: SHORT",e:function(s,sg){return{ok:!sg||sg.direction==="SHORT",actual:"dir: "+(sg?sg.direction:"?")}}}
+  ]
+};
 function connect(){var k=document.getElementById("keyInput").value.trim();if(!k){alert("Enter key");return}KEY=k;localStorage.setItem("prism_key",k);document.getElementById("connectScreen").style.display="none";document.getElementById("mainContent").classList.add("show");checkKiteToken();fetchData();refreshInterval=setInterval(fetchData,3000);setLive("live")}
 document.addEventListener("DOMContentLoaded",function(){var s=localStorage.getItem("prism_key");if(s)document.getElementById("keyInput").value=s;var p=new URLSearchParams(window.location.search);if(p.has("kite_success")){window.history.replaceState({},"",window.location.pathname);if(s)setTimeout(connect,100)}if(p.has("kite_error")){window.history.replaceState({},"",window.location.pathname);alert("Kite login failed: "+p.get("kite_error"))}});
 function manualRefresh(){if(KEY)fetchData()}
@@ -166,14 +295,65 @@ function handleKite(){if(accessToken){accessToken=null;kiteUserId=null;updateKit
 function updateKiteUI(on){var d=document.getElementById("kiteDot"),s=document.getElementById("kiteStatus"),b=document.getElementById("kiteBtn");if(on){d.classList.add("on");s.textContent="Kite: "+kiteUserId;b.textContent="Logout";b.className="kite-btn logout"}else{d.classList.remove("on");s.textContent="Kite: Not connected";b.textContent="Login to Kite";b.className="kite-btn login"}}
 function setLive(status){var b=document.getElementById("liveBadge"),t=document.getElementById("liveText");if(status==="live"){b.className="live-badge on";t.textContent="LIVE"}else if(status==="completed"){b.className="live-badge off";t.textContent="COMPLETED"}else{b.className="live-badge off";t.textContent="OFFLINE"}}
 function F(v){return v!=null?Number(v).toFixed(2):"—"}
-async function fetchData(){if(!KEY)return;try{var d=new Date(),ist=new Date(d.getTime()+(5.5*60*60*1000)),ds=ist.toISOString().split("T")[0];var sessions=await Q("sessions","select=*&trade_date=eq."+ds+"&limit=1");if(!sessions||!sessions.length){showWaiting("No session — waiting for 9:15 AM");setLive("off");renderPatterns(null);return}var session=sessions[0],sid=session.id;setLive(session.status==="scanning"||session.status==="active"?"live":session.status==="completed"?"completed":"off");var r=await Promise.all([Q("session_state","select=*&session_id=eq."+sid+"&limit=1"),Q("candles","select=close&session_id=eq."+sid+"&order=candle_number.desc&limit=1"),Q("signals","select=*&session_id=eq."+sid+"&order=created_at.desc&limit=1"),Q("positions","select=*&session_id=eq."+sid+"&order=created_at.desc&limit=1"),Q("settings","select=lot_size&limit=1")]);var state=r[0][0]||null,lc=r[1][0]||null,signal=r[2][0]||null,pos=r[3][0]||null,settings=r[4][0]||null;if(lc)currentNiftyPrice=lc.close;var sym=(state&&state.trading_symbol)?state.trading_symbol:"NIFTY26APRFUT";var lots=(settings&&settings.lot_size)?settings.lot_size:1;document.getElementById("tradeHeader").textContent=sym+" | MIS | "+lots+" lot ("+(lots*65)+" qty)";if(pos&&pos.status==="open"){showPosition(pos,state)}else if(pos&&pos.status==="closed"){showResult(pos)}else if(signal&&(signal.status==="pending"||signal.status==="executing")&&state&&!state.trade_taken&&state.pending_limit_entry_level){showLimitPending(signal,state)}else if(signal&&signal.status==="executing"&&state&&!state.trade_taken&&!state.pending_limit_entry_level){showWaiting(session.status==="completed"?"Session completed — limit expired, no trade":"Limit expired — no entry")}else if(signal&&signal.status==="pending"){showSignal(signal)}else if(state&&state.pending_limit_entry_level){showLimitPending(signal,state)}else if(state){var cn=state.candles_processed||0;showWaiting(session.status==="completed"?"Session completed — no trade":"Scanning... C"+cn+"/180")}else{showWaiting("Waiting for first candle (9:15 AM)")}renderPatterns(state);document.getElementById("lastUpdated").textContent=new Date().toLocaleTimeString("en-IN",{hour12:false})}catch(e){console.error(e)}}
+async function fetchData(){if(!KEY)return;try{var d=new Date(),ist=new Date(d.getTime()+(5.5*60*60*1000)),ds=ist.toISOString().split("T")[0];var sessions=await Q("sessions","select=*&trade_date=eq."+ds+"&limit=1");if(!sessions||!sessions.length){showWaiting("No session — waiting for 9:15 AM");setLive("off");renderPatterns(null);renderEvents(null);renderVerification(null,null,null,null);return}var session=sessions[0],sid=session.id;setLive(session.status==="scanning"||session.status==="active"?"live":session.status==="completed"?"completed":"off");var r=await Promise.all([Q("session_state","select=*&session_id=eq."+sid+"&limit=1"),Q("candles","select=close&session_id=eq."+sid+"&order=candle_number.desc&limit=1"),Q("signals","select=*&session_id=eq."+sid+"&order=created_at.desc&limit=1"),Q("positions","select=*&session_id=eq."+sid+"&order=created_at.desc&limit=1"),Q("settings","select=lot_size&limit=1"),Q("pivot_levels","select=*&session_id=eq."+sid+"&limit=1"),Q("engine_logs","select=*&session_id=eq."+sid+"&level=neq.debug&order=created_at.desc&limit=50")]);var state=r[0][0]||null,lc=r[1][0]||null,signal=r[2][0]||null,pos=r[3][0]||null,settings=r[4][0]||null,pivots=r[5][0]||null,logs=r[6]||[];if(lc)currentNiftyPrice=lc.close;var sym=(state&&state.trading_symbol)?state.trading_symbol:"NIFTY26APRFUT";var lots=(settings&&settings.lot_size)?settings.lot_size:1;document.getElementById("tradeHeader").textContent=sym+" | MIS | "+lots+" lot ("+(lots*65)+" qty)";if(pos&&pos.status==="open"){showPosition(pos,state)}else if(pos&&pos.status==="closed"){showResult(pos)}else if(signal&&(signal.status==="pending"||signal.status==="executing")&&state&&!state.trade_taken&&state.pending_limit_entry_level){showLimitPending(signal,state)}else if(signal&&signal.status==="executing"&&state&&!state.trade_taken&&!state.pending_limit_entry_level){showWaiting(session.status==="completed"?"Session completed — limit expired, no trade":"Limit expired — no entry")}else if(signal&&signal.status==="pending"){showSignal(signal)}else if(state&&state.pending_limit_entry_level){showLimitPending(signal,state)}else if(state){var cn=state.candles_processed||0;showWaiting(session.status==="completed"?"Session completed — no trade":"Scanning... C"+cn+"/180")}else{showWaiting("Waiting for first candle (9:15 AM)")}renderPatterns(state);renderEvents(logs);renderVerification(state,signal,pos,pivots);document.getElementById("lastUpdated").textContent=new Date().toLocaleTimeString("en-IN",{hour12:false})}catch(e){console.error(e)}}
 function hideAll(){document.getElementById("tradeWaiting").style.display="none";document.getElementById("signalCard").className="signal-card";document.getElementById("positionCard").className="position-card";document.getElementById("tradeResult").className="trade-result"}
 function showWaiting(t){hideAll();document.getElementById("tradeWaiting").style.display="block";document.getElementById("tradeWaiting").querySelector(".trade-waiting-text").textContent=t}
 function showSignal(sig){hideAll();document.getElementById("signalCard").className="signal-card show";document.getElementById("sigPattern").textContent=sig.pattern;var d=sig.direction||"—",de=document.getElementById("sigDir");de.textContent=d;de.className="signal-dir "+d.toLowerCase();var se=document.getElementById("sigStatus");se.textContent=sig.status==="pending"?"⏳ Pending approval":"⚡ Auto-executing...";se.className="signal-status "+(sig.status==="pending"?"pending":"executed");document.getElementById("sigEntry").textContent=F(sig.entry_level);document.getElementById("sigTarget").textContent=F(sig.target_level);document.getElementById("sigSL").textContent=F(sig.sl_level)}
 function showLimitPending(sig,st){hideAll();document.getElementById("signalCard").className="signal-card show";document.getElementById("sigPattern").textContent=st.pending_limit_pattern||(sig?sig.pattern:"—");var d=st.pending_limit_direction||(sig?sig.direction:"—"),de=document.getElementById("sigDir");de.textContent=d;de.className="signal-dir "+(d||"").toLowerCase();var se=document.getElementById("sigStatus");se.textContent="📍 LIMIT PENDING — spot must reach "+F(st.pending_limit_entry_level);se.className="signal-status limit-pending";document.getElementById("sigEntry").textContent=F(st.pending_limit_entry_level);document.getElementById("sigTarget").textContent=sig?F(sig.target_level):"—";document.getElementById("sigSL").textContent=sig?F(sig.sl_level):"—"}
 function showPosition(pos,st){hideAll();document.getElementById("positionCard").className="position-card show";document.getElementById("posPattern").textContent=pos.pattern||(st?st.active_pattern:"")||"OPEN";var d=pos.direction,de=document.getElementById("posDir");de.textContent=d;de.className="signal-dir "+d.toLowerCase();var entry=pos.entry_price_actual||pos.entry_price_nifty,cur=currentNiftyPrice||entry,pts=d==="LONG"?cur-entry:entry-cur,qty=pos.entry_quantity||65,rs=pts*qty;var pe=document.getElementById("posPnL");pe.textContent=(rs>=0?"+":"")+"₹"+Math.abs(rs).toLocaleString("en-IN",{maximumFractionDigits:0});pe.className="position-pnl-value "+(rs>=0?"profit":"loss");document.getElementById("posPnLSub").textContent=(pts>=0?"+":"")+pts.toFixed(1)+" pts × "+qty+" qty";var tgt=pos.target_level,sl=pos.sl_level,rng=tgt-sl,prog=Math.max(0,Math.min(100,((cur-sl)/rng)*100));var bar=document.getElementById("posProgress");bar.style.width=prog+"%";bar.className="position-progress-bar "+(pts>=0?"to-target":"to-sl");document.getElementById("posSLLabel").textContent="SL: "+F(sl);document.getElementById("posEntryLabel").textContent="Entry: "+F(entry);document.getElementById("posTargetLabel").textContent="Target: "+F(tgt);document.getElementById("posEntry").textContent=F(entry);document.getElementById("posTarget").textContent=F(tgt);document.getElementById("posSL").textContent=F(sl)}
 function showResult(pos){hideAll();document.getElementById("tradeResult").className="trade-result show";var t=pos.exit_type||"closed",te=document.getElementById("resultType"),lb={target:"TARGET HIT ✓",sl:"STOP LOSS ✗",hard_exit:"HARD EXIT ⏰",manual:"MANUAL EXIT"};te.textContent=lb[t]||t.toUpperCase();te.className="trade-result-type "+t;var pnl=Number(pos.pnl_points||0),qty=pos.entry_quantity||65,rs=pnl*qty;var pe=document.getElementById("resultPnL");pe.textContent=(rs>=0?"+":"")+"₹"+Math.abs(rs).toLocaleString("en-IN",{maximumFractionDigits:0})+" ("+(pnl>=0?"+":"")+pnl.toFixed(1)+" pts)";pe.style.color=rs>=0?"#22c55e":"#ef4444"}
-function renderPatterns(st){var el=document.getElementById("patternList");if(!st||!st.c1_type){el.innerHTML='<div style="padding:16px;text-align:center;color:#334155;font-size:12px">No session data</div>';document.getElementById("patternsTitle").textContent="PATTERNS";return}var cn=st.candles_processed||0;document.getElementById("patternsTitle").textContent=st.c1_type==="seller"?"SELLER PATTERNS":"BUYER PATTERNS";var rows=[];if(st.c1_type==="seller"){var dl={SB1:4,SB2:60,SA1:8,SC1:20};["SB1","SB2","SA1","SC1"].forEach(function(p){var conf=st[p.toLowerCase()+"_confirmed"],fired=st.seller_pattern_fired,s,b;if(conf){s="FIRED";b="fired"}else if(fired&&fired!=="SA1_NO_TRADE"){s="BLOCKED";b="block"}else if(cn>(dl[p]||60)){s="EXPIRED";b="exp"}else{s="MONITORING";b="mon"}rows.push({p:p,s:s,b:b,o:conf?0:s==="MONITORING"?1:2,c:"ps"})});["SD1","SD2","SD3","SD4","SD5"].forEach(function(p){var s,b;if(st.sd_pattern===p){if(st.trade_taken){s="FIRED";b="fired"}else if(st.pending_limit_entry_level!=null){s="LIMIT PENDING";b="lp"}else{s="NO ENTRY";b="ne"}}else if(st.sd_pattern_evaluated||cn>=20){s="—";b="nm"}else{s="PENDING (C20)";b="pend"}if(st.seller_pattern_fired&&st.seller_pattern_fired!=="SA1_NO_TRADE"&&st.sd_pattern!==p){s="BLOCKED";b="block"}rows.push({p:p,s:s,b:b,o:s==="FIRED"||s==="LIMIT PENDING"||s==="NO ENTRY"?0:s==="MONITORING"||s==="PENDING (C20)"?1:2,c:"pd"})})}else{var dl={BA1:20,BB1:40,BC1:20,BC2:60};["BA1","BB1","BC1","BC2"].forEach(function(p){var conf=st[p.toLowerCase()+"_confirmed"],fired=st.buyer_pattern_fired,s,b;if(conf){s="FIRED";b="fired"}else if(fired){s="BLOCKED";b="block"}else if(cn>(dl[p]||60)){s="EXPIRED";b="exp"}else{s="MONITORING";b="mon"}rows.push({p:p,s:s,b:b,o:conf?0:s==="MONITORING"?1:2,c:"pb2"})})}rows.sort(function(a,b){return a.o-b.o});var h="";rows.forEach(function(r){h+='<div class="pattern-row"><div><span class="pattern-name '+r.c+'">'+r.p+'</span><span class="pattern-desc">'+(PM[r.p]?PM[r.p].d:"")+'</span></div><span class="pb pb-'+r.b+'">'+r.s+'</span></div>'});el.innerHTML=h}
+function renderPatterns(st){var el=document.getElementById("patternList");if(!st||!st.c1_type){el.innerHTML='<div style="padding:16px;text-align:center;color:#334155;font-size:12px">No session data</div>';document.getElementById("patternsTitle").textContent="PATTERNS";return}var cn=st.candles_processed||0;document.getElementById("patternsTitle").textContent=st.c1_type==="seller"?"SELLER PATTERNS":"BUYER PATTERNS";var rows=[];if(st.c1_type==="seller"){var dl={SB1:4,SB2:60,SA1:8,SC1:20};["SB1","SB2","SA1","SC1"].forEach(function(p){var conf=st[p.toLowerCase()+"_confirmed"],fired=st.seller_pattern_fired,s,b;if(conf){s="FIRED";b="fired"}else if(fired&&fired!=="SA1_NO_TRADE"){s="BLOCKED";b="block"}else if(cn>(dl[p]||60)){s="EXPIRED";b="exp"}else{s="MONITORING";b="mon"}rows.push({p:p,s:s,b:b,o:conf?0:s==="MONITORING"?1:2,c:"p-"+p.toLowerCase()})});["SD1","SD2","SD3","SD4","SD5"].forEach(function(p){var s,b;if(st.sd_pattern===p){if(st.trade_taken){s="FIRED";b="fired"}else if(st.pending_limit_entry_level!=null){s="LIMIT PENDING";b="lp"}else{s="NO ENTRY";b="ne"}}else if(st.sd_pattern_evaluated||cn>=20){s="—";b="nm"}else{s="PENDING (C20)";b="pend"}if(st.seller_pattern_fired&&st.seller_pattern_fired!=="SA1_NO_TRADE"&&st.sd_pattern!==p){s="BLOCKED";b="block"}rows.push({p:p,s:s,b:b,o:s==="FIRED"||s==="LIMIT PENDING"||s==="NO ENTRY"?0:s==="MONITORING"||s==="PENDING (C20)"?1:2,c:"p-"+p.toLowerCase()})})}else{var dl={BA1:20,BB1:40,BC1:20,BC2:60};["BA1","BB1","BC1","BC2"].forEach(function(p){var conf=st[p.toLowerCase()+"_confirmed"],fired=st.buyer_pattern_fired,s,b;if(conf){s="FIRED";b="fired"}else if(fired){s="BLOCKED";b="block"}else if(cn>(dl[p]||60)){s="EXPIRED";b="exp"}else{s="MONITORING";b="mon"}rows.push({p:p,s:s,b:b,o:conf?0:s==="MONITORING"?1:2,c:"p-"+p.toLowerCase()})})}rows.sort(function(a,b){return a.o-b.o});var h="";rows.forEach(function(r){h+='<div class="pattern-row"><div><span class="pattern-name '+r.c+'">'+r.p+'</span><span class="pattern-desc">'+(PM[r.p]?PM[r.p].d:"")+'</span></div><span class="pb pb-'+r.b+'">'+r.s+'</span></div>'});el.innerHTML=h}
+
+function renderEvents(logs){
+  var el=document.getElementById("eventList");
+  if(!logs||!logs.length){el.innerHTML='<div class="events-empty">No events yet</div>';return}
+  var html='';
+  logs.slice(0,30).forEach(function(log){
+    var time=log.created_at?new Date(log.created_at).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",second:"2-digit"}):"—";
+    var cls=log.level==="warn"?"highlight":log.level==="error"?"error":"info";
+    var msg=(log.log||"").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    html+='<div class="log-item"><span class="log-time">'+time+'</span><span class="log-msg '+cls+'">'+msg+'</span></div>';
+  });
+  el.innerHTML=html;
+}
+
+function vfPatternKey(p){return(p||"").replace("_NO_TRADE","")}
+
+function renderVerification(state,signal,position,pivots){
+  var body=document.getElementById("verifyBody");
+  var sumEl=document.getElementById("verifySummary");
+  var pat=null;
+  if(position&&(position.status==="closed"||position.status==="open")){pat=(signal&&signal.pattern)||position.pattern}
+  else if(signal){pat=signal.pattern}
+  else if(state){pat=state.active_pattern||state.seller_pattern_fired||state.buyer_pattern_fired}
+  if(!pat){body.innerHTML='<div class="verify-empty">No pattern fired yet</div>';sumEl.innerHTML='';return}
+  var key=vfPatternKey(pat);
+  var rules=PATTERN_RULES[key];
+  if(!rules){body.innerHTML='<div class="verify-empty">Verification rules for <b>'+key+'</b> not yet defined</div>';sumEl.innerHTML='<span class="verify-pat p-'+key.toLowerCase()+'">'+key+'</span>';return}
+  var passed=0,failed=0,unknown=0;
+  var rulesHtml="";
+  rules.forEach(function(r){
+    var res;
+    try{res=r.e(state||{},signal,position,pivots)}
+    catch(e){res={ok:null,actual:"eval error: "+e.message}}
+    var cls,icon;
+    if(res.ok===true){cls="pass";icon="✓";passed++}
+    else if(res.ok===false){cls="fail";icon="✗";failed++}
+    else{cls="unk";icon="?";unknown++}
+    rulesHtml+='<div class="verify-rule '+cls+'">'+
+      '<span class="verify-icon">'+icon+'</span>'+
+      '<div><div class="verify-desc">'+r.d+'</div><div class="verify-actual">'+res.actual+'</div></div>'+
+    '</div>';
+  });
+  var sumCls,sumLbl;
+  if(failed>0){sumCls="fail";sumLbl="RULE VIOLATION"}
+  else if(unknown>0&&passed===0){sumCls="partial";sumLbl="INCOMPLETE"}
+  else if(unknown>0){sumCls="partial";sumLbl=passed+"/"+rules.length+" VERIFIED"}
+  else{sumCls="ok";sumLbl="EXECUTION VALID"}
+  sumEl.innerHTML='<span class="verify-pat p-'+key.toLowerCase()+'" style="margin-right:8px">'+key+'</span><span class="verify-summary '+sumCls+'">'+sumLbl+'</span>';
+  if(failed>0){rulesHtml+='<div class="verify-warn">⚠ Engine fired this pattern but '+failed+' rule(s) failed verification. Possible bug — investigate.</div>'}
+  body.innerHTML=rulesHtml;
+}
 </script>
 </body>
 </html>
